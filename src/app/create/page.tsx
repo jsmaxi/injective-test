@@ -11,6 +11,13 @@ import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import { pinToIpfs, pinToIpfsJson } from "@/utils/pinata";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import Link from "next/link";
 
 const Create = () => {
   const [uploading, setUploading] = useState(false);
@@ -31,6 +38,9 @@ const Create = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [metadataDialogOpen, setMetadataDialogOpen] = useState(false);
+  const [metadataHash, setMetadataHash] = useState("");
 
   const totalSteps = 4;
 
@@ -220,11 +230,8 @@ const Create = () => {
       try {
         const res = await pinToIpfsJson(jsonBlob);
         console.log("Json ipfs hash", res?.IpfsHash);
-        alert(
-          "Please check the metadata file here: \n\n" +
-            "https://gateway.pinata.cloud/ipfs/" +
-            res?.IpfsHash
-        );
+        setMetadataHash(res?.IpfsHash);
+        setMetadataDialogOpen(true);
       } catch (e) {
         alert("Failed to upload json to Pinata IPFS!");
       }
@@ -708,6 +715,40 @@ const Create = () => {
           </div>
         </main>
       )}
+
+      <Dialog open={metadataDialogOpen} onOpenChange={setMetadataDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center">
+              Agent Metadata File
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="flex flex-col items-center p-4">
+            <div className="brutal-border p-4 bg-brutal-offwhite w-full mb-4">
+              <p className="mb-2 font-semibold">
+                Please check the metadata file here:
+              </p>
+              <p className="brutal-border bg-brutal-white p-3 break-all">
+                <Link
+                  target="_blank"
+                  href={"https://gateway.pinata.cloud/ipfs/" + metadataHash}
+                >
+                  https://gateway.pinata.cloud/ipfs/{metadataHash}
+                </Link>
+              </p>
+            </div>
+
+            <BrutalButton
+              variant="primary"
+              onClick={() => setMetadataDialogOpen(false)}
+              className="w-full"
+            >
+              Close
+            </BrutalButton>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
