@@ -1,24 +1,41 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import BrutalButton from "./BrutalButon";
 import { Mic, Zap, Package, Headphones, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useWalletStore } from "@/context/WalletContextProvider";
+import WalletDialog from "./WalletDialog";
 
 const NavBar: React.FC = () => {
+  const [walletDialogOpen, setWalletDialogOpen] = useState(false);
+
   const currentPath = usePathname();
 
   const isActive = (path: string) => {
     return currentPath === path;
   };
 
-  const { connectWallet, injectiveAddress } = useWalletStore();
+  const { connectWallet, disconnectWallet, injectiveAddress, ethereumAddress } =
+    useWalletStore();
 
   const btnText = injectiveAddress
     ? `${injectiveAddress.slice(0, 5)}...${injectiveAddress.slice(-3)}`
     : "Connect Wallet";
+
+  const handleConnectWallet = () => {
+    if (!injectiveAddress) {
+      connectWallet();
+    } else {
+      setWalletDialogOpen(true);
+    }
+  };
+
+  const handleDisconnectWallet = () => {
+    disconnectWallet();
+    setWalletDialogOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-brutal-white border-b-4 border-brutal-black">
@@ -72,7 +89,7 @@ const NavBar: React.FC = () => {
         </nav>
 
         <div className="flex items-center space-x-4">
-          <BrutalButton onClick={connectWallet}>{btnText}</BrutalButton>
+          <BrutalButton onClick={handleConnectWallet}>{btnText}</BrutalButton>
           <button className="block md:hidden brutal-border bg-brutal-black text-brutal-white p-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -91,6 +108,14 @@ const NavBar: React.FC = () => {
           </button>
         </div>
       </div>
+
+      <WalletDialog
+        isOpen={walletDialogOpen}
+        onOpenChange={setWalletDialogOpen}
+        walletAddress={ethereumAddress}
+        injAddress={injectiveAddress}
+        onDisconnect={handleDisconnectWallet}
+      />
     </header>
   );
 };

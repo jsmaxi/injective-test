@@ -9,12 +9,14 @@ type StoreState = {
   injectiveAddress: string;
   ethereumAddress: string;
   connectWallet: () => void;
+  disconnectWallet: () => void;
 };
 
 const WalletContext = createContext<StoreState>({
   ethereumAddress: "",
   injectiveAddress: "",
   connectWallet: () => {},
+  disconnectWallet: () => {},
 });
 
 export const useWalletStore = () => useContext(WalletContext);
@@ -36,12 +38,19 @@ const WalletContextProvider = (props: Props) => {
     setInjectiveAddress(getInjectiveAddress(address));
   }
 
+  function disconnectWallet() {
+    console.log("disconnect");
+    setEthereumAddress("");
+    setInjectiveAddress("");
+  }
+
   return (
     <WalletContext.Provider
       value={{
         ethereumAddress,
         injectiveAddress,
         connectWallet,
+        disconnectWallet,
       }}
     >
       {props.children}
