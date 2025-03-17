@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/NavBar";
+// import Navbar from "@/components/NavBarExample";
 import WalletContextProvider from "@/context/WalletContextProvider";
 import CounterContextProvider from "@/context/CounterContextProvider";
 import NftContextProvider from "@/context/NftContextProvider";
@@ -21,7 +21,7 @@ export default function RootLayout({
         <WalletContextProvider>
           <CounterContextProvider>
             <NftContextProvider>
-              <Navbar />
+              {/* <Navbar /> */}
               {children}
             </NftContextProvider>
           </CounterContextProvider>
