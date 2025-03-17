@@ -12,3 +12,17 @@ export async function pinToIpfs(f: File) {
     throw error;
   }
 }
+
+export async function pinToIpfsJson(jsonBlob: Blob) {
+  try {
+    const jsonFile = new File([jsonBlob], "agent.json", {
+      type: "application/json",
+    });
+    const upload = await pinata.upload.file(jsonFile);
+    console.log(upload);
+    return upload;
+  } catch (error) {
+    console.error("Error uploading file to IPFS:", error);
+    throw error;
+  }
+}

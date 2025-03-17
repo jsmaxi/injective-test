@@ -1,5 +1,7 @@
 "use client";
 
+// https://gateway.pinata.cloud/ipfs/<hash>
+
 import React, { useRef, useState } from "react";
 import Navbar from "../../components/NavBar";
 import BrutalButton from "../../components/BrutalButon";
@@ -7,8 +9,7 @@ import { Zap, Image, Mic, Coins, Upload } from "lucide-react";
 import { useWalletStore } from "@/context/WalletContextProvider";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
-import axios from "axios";
-import { pinToIpfs } from "@/utils/pinata";
+import { pinToIpfs, pinToIpfsJson } from "@/utils/pinata";
 
 const Create = () => {
   const [uploading, setUploading] = useState(false);
@@ -31,37 +32,54 @@ const Create = () => {
 
   const totalSteps = 4;
 
-  // Sample voices data
   const voices = [
-    { id: "1", name: "Alex", gender: "male", preview: "#", accent: "American" },
+    {
+      id: "1",
+      name: "Arsenio",
+      gender: "male",
+      preview: "#",
+      accent: "African American",
+      link: "s3://voice-cloning-zero-shot/65977f5e-a22a-4b36-861b-ecede19bdd65/original/manifest.json",
+    },
     {
       id: "2",
-      name: "Sophia",
+      name: "Nia",
       gender: "female",
       preview: "#",
-      accent: "British",
+      accent: "American",
+      link: "s3://voice-cloning-zero-shot/831bd330-85c6-4333-b2b4-10c476ea3491/original/manifest.json",
     },
     {
       id: "3",
-      name: "Jackson",
+      name: "Angelo",
       gender: "male",
       preview: "#",
-      accent: "Australian",
+      accent: "American",
+      link: "s3://voice-cloning-zero-shot/baf1ef41-36b6-428c-9bdf-50ba54682bd8/original/manifest.json",
     },
     {
       id: "4",
-      name: "Emma",
+      name: "Inara",
       gender: "female",
       preview: "#",
-      accent: "Canadian",
+      accent: "African American",
+      link: "s3://voice-cloning-zero-shot/adb83b67-8d75-48ff-ad4d-a0840d231ef1/original/manifest.json",
     },
-    { id: "5", name: "Michael", gender: "male", preview: "#", accent: "Irish" },
+    {
+      id: "5",
+      name: "Mitch",
+      gender: "male",
+      preview: "#",
+      accent: "Australian",
+      link: "s3://voice-cloning-zero-shot/c14e50f2-c5e3-47d1-8c45-fa4b67803d19/original/manifest.json",
+    },
     {
       id: "6",
-      name: "Olivia",
+      name: "Ava",
       gender: "female",
       preview: "#",
-      accent: "Scottish",
+      accent: "Australian",
+      link: "s3://voice-cloning-zero-shot/50381567-ff7b-46d2-bfdc-a9584a85e08d/original/manifest.json",
     },
   ];
 
@@ -109,55 +127,55 @@ const Create = () => {
   const handleCreate = async () => {
     console.log("creating...");
 
-    // if (!name) {
-    //   alert("Agent name is required!");
-    //   return;
-    // }
+    if (!name) {
+      alert("Agent name is required!");
+      return;
+    }
 
-    // if (!description) {
-    //   alert("Agent personality description is required!");
-    //   return;
-    // }
+    if (!description) {
+      alert("Agent personality description is required!");
+      return;
+    }
 
-    // if (!selectedGender) {
-    //   alert("Agent gender is required!");
-    //   return;
-    // }
+    if (!selectedGender) {
+      alert("Agent gender is required!");
+      return;
+    }
 
-    // if (!selectedTags || selectedTags.length === 0) {
-    //   alert("Agent tags are required!");
-    //   return;
-    // }
+    if (!selectedTags || selectedTags.length === 0) {
+      alert("Agent tags are required!");
+      return;
+    }
 
-    // if (!selectedVoice) {
-    //   alert("Agent voice is required!");
-    //   return;
-    // }
+    if (!selectedVoice) {
+      alert("Agent voice is required!");
+      return;
+    }
 
-    // if (!selectedLanguage) {
-    //   alert("Agent language is required!");
-    //   return;
-    // }
+    if (!selectedLanguage) {
+      alert("Agent language is required!");
+      return;
+    }
 
-    // if (!selectedPitch) {
-    //   alert("Agent pitch is required!");
-    //   return;
-    // }
+    if (!selectedPitch) {
+      alert("Agent pitch is required!");
+      return;
+    }
 
-    // if (!selectedSpeed) {
-    //   alert("Agent speed is required!");
-    //   return;
-    // }
+    if (!selectedSpeed) {
+      alert("Agent speed is required!");
+      return;
+    }
 
-    // if (!uploadedAvatar) {
-    //   alert("Agent avatar is required!");
-    //   return;
-    // }
+    if (!uploadedAvatar) {
+      alert("Agent avatar is required!");
+      return;
+    }
 
-    // if (!imageIpfsHash) {
-    //   alert("Image IPFS hash is required!");
-    //   return;
-    // }
+    if (!imageIpfsHash) {
+      alert("Image IPFS hash is required!");
+      return;
+    }
 
     console.log(
       name,
@@ -168,14 +186,42 @@ const Create = () => {
       selectedLanguage,
       selectedPitch,
       selectedSpeed,
-      uploadedAvatar,
       imageIpfsHash
     );
 
     try {
       setUploading(true);
+
+      const jsonData = {
+        name: name,
+        description: description,
+        gender: selectedGender,
+        tags: selectedTags,
+        voice: selectedVoice,
+        language: selectedLanguage,
+        pitch: selectedPitch,
+        speed: selectedSpeed,
+        imageIpfsHash: imageIpfsHash,
+      };
+
+      const jsonBlob = new Blob([JSON.stringify(jsonData, null, 2)], {
+        type: "application/json",
+      });
+
+      try {
+        const res = await pinToIpfsJson(jsonBlob);
+        console.log("Json ipfs hash", res?.IpfsHash);
+        alert(
+          "Please check the metadata file here: \n\n" +
+            "https://gateway.pinata.cloud/ipfs/" +
+            res?.IpfsHash
+        );
+      } catch (e) {
+        alert("Failed to upload json to Pinata IPFS!");
+      }
     } catch (e) {
       console.log(e);
+      alert("Failed to create an agent! Please check console for details.");
     } finally {
       setUploading(false);
     }
@@ -350,11 +396,11 @@ const Create = () => {
                     <div
                       key={voice.id}
                       className={`brutal-border p-3 cursor-pointer ${
-                        selectedVoice === voice.id
+                        selectedVoice === voice.link
                           ? "bg-brutal-black text-brutal-white"
                           : "bg-brutal-offwhite"
                       }`}
-                      onClick={() => setSelectedVoice(voice.id)}
+                      onClick={() => setSelectedVoice(voice.link)}
                     >
                       <div className="flex items-center justify-between">
                         <h3 className="font-bold">{voice.name}</h3>
