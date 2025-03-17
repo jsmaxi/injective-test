@@ -176,7 +176,7 @@ const PodcastRecordingForm: React.FC<PodcastRecordingFormProps> = ({
                   {selectedGuests.length}/{getMaxGuests()})
                 </BrutalButton>
               </DialogTrigger>
-              <DialogContent className="brutal-border bg-brutal-white p-0">
+              <DialogContent className=" bg-brutal-white p-0">
                 <DialogHeader className="p-4 bg-brutal-black text-brutal-white">
                   <DialogTitle>Select Guest Agent</DialogTitle>
                 </DialogHeader>
