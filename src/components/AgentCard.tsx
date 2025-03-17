@@ -57,7 +57,7 @@ const AgentCard: React.FC<AgentCardProps> = ({
       <div className="mt-auto flex items-center">
         <div className="flex items-center">
           <Zap className="w-4 h-4 mr-1" />
-          <span className="font-bold">{price} ETH</span>
+          <span className="font-bold">{price} INJ</span>
         </div>
       </div>
     </div>

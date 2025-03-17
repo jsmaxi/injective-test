@@ -78,7 +78,7 @@ const Hero: React.FC = () => {
                   Current price
                 </div>
                 <div className="text-2xl font-bold flex items-center justify-center">
-                  <Zap className="w-5 h-5 mr-2" /> 2.45 ETH
+                  <Zap className="w-5 h-5 mr-2" /> 2.45 INJ
                 </div>
               </div>
             </div>

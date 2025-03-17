@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import BrutalButton from "./BrutalButon";
 import { Mic, Zap, Package, Headphones, User } from "lucide-react";
