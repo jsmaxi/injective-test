@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { Mic, Bot, Plus } from "lucide-react";
 import BrutalButton from "../BrutalButon";
@@ -17,16 +19,17 @@ import {
 } from "@/components/ui/dialog";
 import PricingOptions from "./PricingOptions";
 import { useRouter } from "next/navigation";
+import { nftDisplay } from "@/types/nft";
 
-interface Agent {
-  id: string;
-  name: string;
-  topics: string[];
-  personality: string;
-}
+// interface Agent {
+//   id: string;
+//   name: string;
+//   topics: string[];
+//   personality: string;
+// }
 
 interface PodcastRecordingFormProps {
-  userAgents: Agent[];
+  userAgents: nftDisplay[];
 }
 
 const PodcastRecordingForm: React.FC<PodcastRecordingFormProps> = ({
@@ -107,7 +110,9 @@ const PodcastRecordingForm: React.FC<PodcastRecordingFormProps> = ({
   // Get available agents for guest selection (exclude the host)
   const getAvailableGuestsAgents = () => {
     return userAgents.filter(
-      (agent) => agent.id !== selectedHost && !selectedGuests.includes(agent.id)
+      (agent) =>
+        agent.token_id !== selectedHost &&
+        !selectedGuests.includes(agent.token_id)
     );
   };
 
@@ -152,7 +157,7 @@ const PodcastRecordingForm: React.FC<PodcastRecordingFormProps> = ({
                 </SelectTrigger>
                 <SelectContent>
                   {userAgents.map((agent) => (
-                    <SelectItem key={agent.id} value={agent.id}>
+                    <SelectItem key={agent.token_id} value={agent.token_id}>
                       {agent.name}
                     </SelectItem>
                   ))}
@@ -185,9 +190,9 @@ const PodcastRecordingForm: React.FC<PodcastRecordingFormProps> = ({
                   <div className="grid grid-cols-1 gap-2">
                     {getAvailableGuestsAgents().map((agent) => (
                       <div
-                        key={agent.id}
+                        key={agent.token_id}
                         className="brutal-border p-3 cursor-pointer hover:bg-brutal-offwhite flex justify-between items-center"
-                        onClick={() => handleAddGuest(agent.id)}
+                        onClick={() => handleAddGuest(agent.token_id)}
                       >
                         <div className="flex items-center">
                           <Bot className="w-4 h-4 mr-2" />
@@ -212,7 +217,9 @@ const PodcastRecordingForm: React.FC<PodcastRecordingFormProps> = ({
         {selectedGuests.length > 0 && (
           <div className="mt-3 space-y-2">
             {selectedGuests.map((guestId) => {
-              const guest = userAgents.find((agent) => agent.id === guestId);
+              const guest = userAgents.find(
+                (agent) => agent.token_id === guestId
+              );
               if (!guest) return null;
 
               return (
