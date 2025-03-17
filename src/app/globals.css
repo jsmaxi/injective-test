@@ -1,3 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 0 0% 10%;
+  
+      --card: 0 0% 98%;
+      --card-foreground: 0 0% 10%;
+  
+      --popover: 0 0% 100%;
+      --popover-foreground: 0 0% 10%;
+  
+      --primary: 0 100% 50%;
+      --primary-foreground: 0 0% 100%;
+  
+      --secondary: 0 0% 90%;
+      --secondary-foreground: 0 0% 10%;
+  
+      --muted: 0 0% 80%;
+      --muted-foreground: 0 0% 30%;
+  
+      --accent: 0 100% 50%;
+      --accent-foreground: 0 0% 100%;
+  
+      --destructive: 0 100% 50%;
+      --destructive-foreground: 0 0% 100%;
+  
+      --border: 0 0% 0%;
+      --input: 0 0% 90%;
+      --ring: 0 0% 0%;
+  
+      --radius: 0px;
+    }
+  
+    * {
+      @apply border-border selection:bg-brutal-red selection:text-brutal-white;
+      box-sizing: border-box;
+    }
+  
+    body {
+      @apply font-mono text-foreground bg-brutal-white;
+      font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+    }
+  
+    html {
+      @apply scroll-smooth;
+    }
+  }
+  
+  @layer components {
+    .brutal-border {
+      @apply border-4 border-brutal-black shadow-[6px_6px_0_0_#000];
+      position: relative;
+      transition: all 0.1s ease-in-out;
+    }
+  
+    .brutal-border:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 0 black;
+    }
+  
+    .brutal-border:active {
+      transform: translate(2px, 2px);
+      box-shadow: 4px 4px 0 0 black;
+    }
+  
+    .brutal-card {
+      @apply brutal-border bg-brutal-white p-4;
+    }
+  
+    .brutal-input {
+      @apply bg-brutal-white border-4 border-brutal-black px-4 py-2 outline-none w-full;
+    }
+  
+    .brutal-badge {
+      @apply inline-block bg-brutal-black text-brutal-white px-2 py-1 text-xs uppercase font-bold mr-2;
+    }
+    
+    .brutal-badge-alt {
+      @apply inline-block bg-brutal-red text-brutal-white px-2 py-1 text-xs uppercase font-bold mr-2;
+    }
+  
+    .title-brutal {
+      @apply font-display text-4xl md:text-6xl lg:text-7xl leading-none uppercase;
+      text-shadow: 3px 3px 0 #ff0000;
+    }
+  
+    .grid-pattern {
+      background-image: 
+        linear-gradient(to right, black 1px, transparent 1px),
+        linear-gradient(to bottom, black 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+  }
+  
