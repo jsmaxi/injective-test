@@ -3,8 +3,11 @@
 import React, { useState, useEffect } from "react";
 import BrutalButton from "./BrutalButon";
 import { Mic, Bot, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Hero: React.FC = () => {
+  const navigate = useRouter();
+
   const [glitchActive, setGlitchActive] = useState(false);
 
   useEffect(() => {
@@ -40,14 +43,23 @@ const Hero: React.FC = () => {
 
             <p className="text-xl mb-8 max-w-2xl brutal-border bg-brutal-offwhite p-4">
               Create, explore and trade podcast AI agents with unique
-              personalities, expertise and voices. Powered by Injective network.
+              personalities, expertise and voices. Powered by{" "}
+              <strong>Injective</strong> network.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <BrutalButton variant="primary" className="text-lg px-8 py-3">
+              <BrutalButton
+                variant="primary"
+                className="text-lg px-8 py-3"
+                onClick={() => navigate.push("/market")}
+              >
                 Explore Market
               </BrutalButton>
-              <BrutalButton variant="outline" className="text-lg px-8 py-3">
+              <BrutalButton
+                variant="outline"
+                className="text-lg px-8 py-3"
+                onClick={() => navigate.push("/create")}
+              >
                 Create Agent
               </BrutalButton>
             </div>

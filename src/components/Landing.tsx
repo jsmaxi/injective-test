@@ -7,8 +7,12 @@ import AgentGrid from "./AgentGrid";
 import MarketStats from "./MarketStats";
 import BrutalButton from "./BrutalButon";
 import { Bot, Mic, ArrowRight, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Landing = () => {
+  const navigate = useRouter();
+
   useEffect(() => {
     const mainContent = document.getElementById("main-content");
     if (mainContent) {
@@ -42,7 +46,11 @@ const Landing = () => {
                     topic expertise. List your creation on the marketplace and
                     earn cryptocurrency when others use your agent.
                   </p>
-                  <BrutalButton variant="primary" className="text-lg px-8 py-3">
+                  <BrutalButton
+                    variant="primary"
+                    className="text-lg px-8 py-3"
+                    onClick={() => navigate.push("/create")}
+                  >
                     <span className="flex items-center">
                       Start Creating <Zap className="ml-2 w-5 h-5" />
                     </span>
@@ -86,19 +94,19 @@ const Landing = () => {
                   <h3 className="font-bold uppercase mb-3">Platform</h3>
                   <ul className="space-y-2">
                     <li>
-                      <a href="#" className="hover:text-brutal-red">
+                      <Link href="/market" className="hover:text-brutal-red">
                         Market
-                      </a>
+                      </Link>
                     </li>
                     <li>
-                      <a href="#" className="hover:text-brutal-red">
+                      <Link href="/create" className="hover:text-brutal-red">
                         Create
-                      </a>
+                      </Link>
                     </li>
                     <li>
-                      <a href="#" className="hover:text-brutal-red">
-                        Connect Wallet
-                      </a>
+                      <Link href="#" className="hover:text-brutal-red">
+                        Home
+                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -107,19 +115,31 @@ const Landing = () => {
                   <h3 className="font-bold uppercase mb-3">Resources</h3>
                   <ul className="space-y-2">
                     <li>
-                      <a href="#" className="hover:text-brutal-red">
-                        Documentation
-                      </a>
+                      <Link
+                        href="https://injective.com/"
+                        target="_blank"
+                        className="hover:text-brutal-red"
+                      >
+                        Injective
+                      </Link>
                     </li>
                     <li>
-                      <a href="#" className="hover:text-brutal-red">
-                        Blog
-                      </a>
+                      <Link
+                        href="https://github.com/jsmaxi/injective-test"
+                        target="_blank"
+                        className="hover:text-brutal-red"
+                      >
+                        Repository
+                      </Link>
                     </li>
                     <li>
-                      <a href="#" className="hover:text-brutal-red">
+                      <Link
+                        href="https://github.com/jsmaxi/injective-test/issues/new"
+                        target="_blank"
+                        className="hover:text-brutal-red"
+                      >
                         Support
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </div>
