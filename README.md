@@ -1,4 +1,4 @@
-PodcastAI Injective
+# PodcastAI Injective
 
 CRYPTO + AI + PODCASTS
 
