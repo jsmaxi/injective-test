@@ -255,12 +255,20 @@ const Create = () => {
                 {languages.map((language) => (
                   <div
                     key={language}
-                    className={`brutal-border p-2 text-center cursor-pointer ${
+                    title={language === "English" ? "" : "Coming soon!"}
+                    className={`brutal-border p-2 text-center ${
+                      language === "English"
+                        ? "cursor-pointer"
+                        : "cursor-not-allowed"
+                    } ${
                       selectedLanguage === language
                         ? "bg-brutal-black text-brutal-white"
                         : "bg-brutal-offwhite"
                     }`}
-                    onClick={() => setSelectedLanguage(language)}
+                    onClick={() => {
+                      if (language === "English") setSelectedLanguage(language);
+                      else alert("Coming soon! For now select English.");
+                    }}
                   >
                     {language}
                   </div>
