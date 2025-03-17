@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/NavBar";
 import TabButtons from "../../components/studio/TabButtons";
 import PodcastRecordingForm from "../../components/studio/PodcastRecordingForm";
@@ -8,10 +8,57 @@ import AgentsSidebar from "../../components/studio/AgentsSidebar";
 import LivePodcastsGrid from "../../components/studio/LivePodcastsGrid";
 import { useRouter } from "next/navigation";
 import { useWalletStore } from "@/context/WalletContextProvider";
+import { useNftStore } from "@/context/NftContextProvider";
+import { nftDisplay } from "@/types/nft";
+import { getContents } from "@/utils/pinata";
 
 const Studio = () => {
   const navigate = useRouter();
   const [activeTab, setActiveTab] = useState("record");
+  const [myNfts, setMyNfts] = useState<nftDisplay[]>([]);
+
+  const { ownerNfts, isLoading } = useNftStore();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userAgents = ownerNfts;
+        const resultArray: nftDisplay[] = [];
+        console.log("Total agents for this user", userAgents.length);
+
+        for (let i = 0; i < userAgents.length; i++) {
+          try {
+            // console.log("Fetch metadata: ", userAgents[i].token_uri);
+            const pinned = await getContents(userAgents[i].token_uri);
+            const dt = pinned?.data as any;
+            // console.log(dt);
+            const nftD: nftDisplay = {
+              token_id: userAgents[i].token_id,
+              name: dt.name,
+              personality: dt.personality,
+              owner: userAgents[i].owner,
+              creator: userAgents[i].creator,
+              gender: dt.gender,
+              language: dt.language,
+              tags: dt.tags,
+              imageHash: dt.imageIpfsHash,
+              price: userAgents[i].price,
+              is_listed: userAgents[i].is_listed,
+            };
+            resultArray.push(nftD);
+          } catch (e) {
+            // ignore this
+          }
+        }
+
+        setMyNfts(resultArray);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData().catch(console.log);
+  }, [ownerNfts]);
 
   // Sample live podcasts data
   const livePodcasts = [
@@ -39,35 +86,35 @@ const Studio = () => {
   ];
 
   // Sample user agents
-  const userAgents = [
-    {
-      id: "1",
-      name: "CryptoTalkAI",
-      topics: ["CRYPTO", "TECH", "NEWS"],
-      personality:
-        "Expert in blockchain technology with sarcastic personality.",
-    },
-    {
-      id: "2",
-      name: "TechGuru",
-      topics: ["TECH", "GADGETS", "REVIEWS"],
-      personality: "Tech enthusiast with deep knowledge of latest gadgets.",
-    },
-    {
-      id: "7",
-      name: "HealthExpert",
-      topics: ["HEALTH", "FITNESS", "NUTRITION"],
-      personality:
-        "Knowledgeable about health topics with a supportive approach.",
-    },
-    {
-      id: "8",
-      name: "TravelGuide",
-      topics: ["TRAVEL", "CULTURE", "ADVENTURE"],
-      personality:
-        "Passionate traveler with insights on destinations worldwide.",
-    },
-  ];
+  // const userAgents = [
+  //   {
+  //     id: "1",
+  //     name: "CryptoTalkAI",
+  //     topics: ["CRYPTO", "TECH", "NEWS"],
+  //     personality:
+  //       "Expert in blockchain technology with sarcastic personality.",
+  //   },
+  //   {
+  //     id: "2",
+  //     name: "TechGuru",
+  //     topics: ["TECH", "GADGETS", "REVIEWS"],
+  //     personality: "Tech enthusiast with deep knowledge of latest gadgets.",
+  //   },
+  //   {
+  //     id: "7",
+  //     name: "HealthExpert",
+  //     topics: ["HEALTH", "FITNESS", "NUTRITION"],
+  //     personality:
+  //       "Knowledgeable about health topics with a supportive approach.",
+  //   },
+  //   {
+  //     id: "8",
+  //     name: "TravelGuide",
+  //     topics: ["TRAVEL", "CULTURE", "ADVENTURE"],
+  //     personality:
+  //       "Passionate traveler with insights on destinations worldwide.",
+  //   },
+  // ];
 
   const handleJoinLivePodcast = (podcastId: string) => {
     navigate.push(`/podcast-room/live/${podcastId}`);
@@ -102,7 +149,7 @@ const Studio = () => {
             {activeTab === "record" ? (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
-                  <PodcastRecordingForm userAgents={userAgents} />
+                  <PodcastRecordingForm userAgents={myNfts} />
                 </div>
                 <AgentsSidebar />
               </div>
