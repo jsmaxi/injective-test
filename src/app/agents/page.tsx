@@ -113,6 +113,14 @@ const Agents = () => {
     return result;
   };
 
+  function handleList(tokenId: string) {
+    listNft(tokenId);
+  }
+
+  function handleUnlist(tokenId: string) {
+    unlistNft(tokenId);
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-brutal-white">
       <Navbar />
@@ -191,14 +199,22 @@ const Agents = () => {
                     </div>
                     <div className="mt-2 flex justify-center">
                       {agent.is_listed ? (
-                        <BrutalButton variant="outline">
+                        <BrutalButton
+                          variant="outline"
+                          disabled={isLoading}
+                          onClick={() => handleUnlist(agent.token_id)}
+                        >
                           <span className="flex items-center">
                             <ListX className="mr-1 w-4 h-4" /> Unlist from
                             Market
                           </span>
                         </BrutalButton>
                       ) : (
-                        <BrutalButton variant="outline">
+                        <BrutalButton
+                          variant="outline"
+                          disabled={isLoading}
+                          onClick={() => handleList(agent.token_id)}
+                        >
                           <span className="flex items-center">
                             <ShoppingBag className="mr-1 w-4 h-4" /> List on
                             Market
