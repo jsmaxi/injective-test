@@ -2,6 +2,46 @@ PodcastAI Injective
 
 CRYPTO + AI + PODCASTS
 
+Create, buy, and sell AI podcast agents on the first marketplace combining cryptocurrency, artificial intelligence, and podcast technology.
+
+<img src="./images/podcastai.png" alt="project logo" width="77" height="77"/>
+
+Web Application: https://injective-podcastai.vercel.app/
+
+## Overview
+
+PodcastAI enables users to design unique AI podcast hosts with customizable:
+
+- Personality traits
+
+- Voice characteristics
+
+- Topic expertise
+
+List your creations on our market and earn INJ when others use your agents.
+
+## Key Features
+
+- Create AI Podcast Agents: Design personalized AI podcast agents with specific characteristics
+
+- Market Integration: Buy, sell, and trade AI podcast agents using INJ
+
+- Earn While You Create: Generate passive income when others use your agents
+
+- Blockchain Powered: Built on the Injective Network for fast, cheap and secure transactions
+
+## Technology Stack
+
+- Blockchain: Injective Network, Injective SDK, CosmWasm, Rust
+
+- Frontend: NextJs, TailwindCSS
+
+- Wallet Integration: Metamask
+
+- Storage: Pinata Cloud IPFS
+
+- AI Technology: Play AI API, OpenAI API
+
 ---
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
