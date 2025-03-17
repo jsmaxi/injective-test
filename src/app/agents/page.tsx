@@ -1,64 +1,117 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/NavBar";
 import BrutalButton from "../../components/BrutalButon";
 import AgentCard from "../../components/AgentCard";
 import { Bot, ListX, ShoppingBag } from "lucide-react";
 import { useWalletStore } from "@/context/WalletContextProvider";
+import { nft, nftDisplay } from "@/types/nft";
+import { useNftStore } from "@/context/NftContextProvider";
+import { getContents } from "@/utils/pinata";
 
 const Agents = () => {
   const [filter, setFilter] = useState("all");
+  const [myNfts, setMyNfts] = useState<nftDisplay[]>([]);
+  const { ownerNfts, isLoading, listNft, unlistNft } = useNftStore();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userAgents = ownerNfts;
+        const resultArray: nftDisplay[] = [];
+        console.log("Total agents for this user", userAgents.length);
+
+        for (let i = 0; i < userAgents.length; i++) {
+          try {
+            // console.log("Fetch metadata: ", userAgents[i].token_uri);
+            const pinned = await getContents(userAgents[i].token_uri);
+            const dt = pinned?.data as any;
+            // console.log(dt);
+            const nftD: nftDisplay = {
+              token_id: userAgents[i].token_id,
+              name: dt.name,
+              personality: dt.personality,
+              owner: userAgents[i].owner,
+              creator: userAgents[i].creator,
+              gender: dt.gender,
+              language: dt.language,
+              tags: dt.tags,
+              imageHash: dt.imageIpfsHash,
+              price: userAgents[i].price,
+              is_listed: userAgents[i].is_listed,
+            };
+            resultArray.push(nftD);
+          } catch (e) {
+            // ignore this
+          }
+        }
+
+        setMyNfts(resultArray);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData().catch(console.log);
+  }, [ownerNfts]);
 
   // Sample owned agent data
-  const ownedAgents = [
-    {
-      id: "1",
-      name: "CryptoTalkAI",
-      price: 2.45,
-      topics: ["CRYPTO", "TECH", "NEWS"],
-      personality:
-        "Expert in blockchain technology with sarcastic personality.",
-      voice: "Male, American",
-      language: "English",
-      createdBy: "0x8723...45fc",
-      status: "listed",
-    },
-    {
-      id: "7",
-      name: "HealthExpert",
-      price: 0,
-      topics: ["HEALTH", "FITNESS", "NUTRITION"],
-      personality:
-        "Knowledgeable about health topics with a supportive approach.",
-      voice: "Female, American",
-      language: "English",
-      createdBy: "0x8723...45fc", // user's address
-      status: "unlisted",
-    },
-    {
-      id: "8",
-      name: "TravelGuide",
-      price: 0,
-      topics: ["TRAVEL", "CULTURE", "ADVENTURE"],
-      personality:
-        "Passionate traveler with insights on destinations worldwide.",
-      voice: "Male, British",
-      language: "English, Spanish",
-      createdBy: "0x8723...45fc", // user's address
-      status: "unlisted",
-    },
-  ];
+  // const ownedAgents = [
+  //   {
+  //     id: "1",
+  //     name: "CryptoTalkAI",
+  //     price: 2.45,
+  //     topics: ["CRYPTO", "TECH", "NEWS"],
+  //     personality:
+  //       "Expert in blockchain technology with sarcastic personality.",
+  //     voice: "Male, American",
+  //     language: "English",
+  //     createdBy: "0x8723...45fc",
+  //     status: "listed",
+  //   },
+  //   {
+  //     id: "7",
+  //     name: "HealthExpert",
+  //     price: 0,
+  //     topics: ["HEALTH", "FITNESS", "NUTRITION"],
+  //     personality:
+  //       "Knowledgeable about health topics with a supportive approach.",
+  //     voice: "Female, American",
+  //     language: "English",
+  //     createdBy: "0x8723...45fc", // user's address
+  //     status: "unlisted",
+  //   },
+  //   {
+  //     id: "8",
+  //     name: "TravelGuide",
+  //     price: 0,
+  //     topics: ["TRAVEL", "CULTURE", "ADVENTURE"],
+  //     personality:
+  //       "Passionate traveler with insights on destinations worldwide.",
+  //     voice: "Male, British",
+  //     language: "English, Spanish",
+  //     createdBy: "0x8723...45fc", // user's address
+  //     status: "unlisted",
+  //   },
+  // ];
 
   // Filter agents based on selected filter
   const filteredAgents =
     filter === "all"
-      ? ownedAgents
+      ? myNfts
       : filter === "listed"
-      ? ownedAgents.filter((agent) => agent.status === "listed")
-      : ownedAgents.filter((agent) => agent.status === "unlisted");
+      ? myNfts.filter((agent) => agent.is_listed === true)
+      : myNfts.filter((agent) => agent.is_listed === false);
 
   const { injectiveAddress } = useWalletStore();
+
+  const convertPrice = (price: string | null): number => {
+    if (price === null) return 0;
+    // 10^18 since INJ has 18 decimals
+    const result = Number(price) / Math.pow(10, 18);
+    return result;
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-brutal-white">
@@ -120,24 +173,24 @@ const Agents = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredAgents.map((agent) => (
-                <div key={agent.id} className="flex flex-col">
+              {filteredAgents.map((agent, index) => (
+                <div key={index} className="flex flex-col">
                   <AgentCard
-                    id={agent.id}
+                    id={agent.token_id}
                     name={agent.name}
-                    price={agent.price}
-                    topics={agent.topics}
+                    price={convertPrice(agent.price)}
+                    topics={agent.tags}
                     personality={agent.personality}
                   />
                   <div className="brutal-border mt-2 p-3 bg-brutal-offwhite">
                     <div className="flex flex-wrap gap-4 text-sm">
                       <div className="flex items-center">
                         <Bot className="w-4 h-4 mr-1" />
-                        <span>{agent.voice}</span>
+                        <span>{agent.gender + ", " + agent.language}</span>
                       </div>
                     </div>
                     <div className="mt-2 flex justify-center">
-                      {agent.status === "listed" ? (
+                      {agent.is_listed ? (
                         <BrutalButton variant="outline">
                           <span className="flex items-center">
                             <ListX className="mr-1 w-4 h-4" /> Unlist from

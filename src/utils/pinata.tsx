@@ -26,3 +26,15 @@ export async function pinToIpfsJson(jsonBlob: Blob) {
     throw error;
   }
 }
+
+export async function getContents(fileHash: string) {
+  if (!fileHash || fileHash.length < 10) return; // ignore test hashes
+  try {
+    const data = await pinata.gateways.get(fileHash);
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log("Error fetching from IPFS:", error);
+    // throw error;
+  }
+}

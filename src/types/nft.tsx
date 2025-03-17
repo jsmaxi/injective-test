@@ -6,3 +6,17 @@ export type nft = {
   price: string | null;
   is_listed: boolean;
 };
+
+export type nftDisplay = {
+  token_id: string;
+  name: string;
+  personality: string;
+  owner: string;
+  creator: string;
+  gender: string;
+  language: string;
+  tags: string[];
+  imageHash: string;
+  price: string | null;
+  is_listed: boolean;
+};
