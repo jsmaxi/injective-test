@@ -1,28 +1,29 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Navbar from "../../components/NavBar";
 import BrutalButton from "../../components/BrutalButon";
-import {
-  Zap,
-  Bot,
-  Image,
-  FileText,
-  Languages,
-  Settings,
-  Mic,
-  Coins,
-  ArrowRight,
-} from "lucide-react";
+import { Zap, Image, Mic, Coins, Upload } from "lucide-react";
 import { useWalletStore } from "@/context/WalletContextProvider";
 import { toast } from "sonner";
+import { Progress } from "@/components/ui/progress";
 
 const Create = () => {
   const [step, setStep] = useState(1);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedVoice, setSelectedVoice] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedPitch, setSelectedPitch] = useState("");
+  const [selectedSpeed, setSelectedSpeed] = useState("");
+
+  const [uploadedAvatar, setUploadedAvatar] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const totalSteps = 4;
 
@@ -101,6 +102,59 @@ const Create = () => {
     }
   };
 
+  const handleCreate = () => {
+    console.log("creating...");
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Check file type
+    if (!["image/jpeg", "image/png"].includes(file.type)) {
+      toast.error("Please upload a JPEG or PNG file");
+      return;
+    }
+
+    // Check file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size must be less than 5MB");
+      return;
+    }
+
+    // Simulate upload progress
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    const interval = setInterval(() => {
+      setUploadProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 200);
+
+    // Create file reader to get data URL
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      setTimeout(() => {
+        setUploadedAvatar(dataUrl);
+        setIsUploading(false);
+        setUploadProgress(100);
+        toast.success("Image uploaded successfully");
+        clearInterval(interval);
+      }, 2000);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -117,6 +171,8 @@ const Create = () => {
                 className="brutal-border w-full p-3 bg-brutal-offwhite"
                 placeholder="Choose a unique name"
                 maxLength={50}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
 
@@ -129,6 +185,8 @@ const Create = () => {
                 rows={4}
                 placeholder="Describe your agent's personality (e.g., sarcastic, friendly, analytical, etc.)"
                 maxLength={300}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
 
@@ -257,11 +315,27 @@ const Create = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="brutal-border p-3 bg-brutal-offwhite">
                   <div className="font-bold mb-1">Pitch</div>
-                  <input type="range" min="1" max="10" className="w-full" />
+                  <input
+                    type="range"
+                    min="1"
+                    max="6"
+                    step={1}
+                    className="w-full"
+                    value={selectedPitch}
+                    onChange={(e) => setSelectedPitch(e.target.value)}
+                  />
                 </div>
                 <div className="brutal-border p-3 bg-brutal-offwhite">
                   <div className="font-bold mb-1">Speed</div>
-                  <input type="range" min="1" max="10" className="w-full" />
+                  <input
+                    type="range"
+                    min="1"
+                    max="6"
+                    step={1}
+                    className="w-full"
+                    value={selectedSpeed}
+                    onChange={(e) => setSelectedSpeed(e.target.value)}
+                  />
                 </div>
               </div>
             </div>
@@ -270,16 +344,49 @@ const Create = () => {
       case 3:
         return (
           <div className="brutal-card">
-            <h2 className="text-xl font-bold uppercase mb-6">NFT Avatar</h2>
+            <h2 className="text-xl font-bold uppercase mb-6">Agent Avatar</h2>
 
             <div className="mb-6">
               <label className="block font-bold mb-2">Avatar Image</label>
               <div className="brutal-border bg-brutal-offwhite p-4 flex flex-col items-center justify-center min-h-[200px]">
-                <Image className="w-12 h-12 mb-4 text-brutal-black" />
-                <p className="mb-4 text-center">
-                  Drag & drop your image or click to browse
-                </p>
-                <BrutalButton variant="outline">Upload Avatar</BrutalButton>
+                {uploadedAvatar ? (
+                  <div className="flex flex-col items-center">
+                    <img
+                      src={uploadedAvatar}
+                      alt="Uploaded avatar"
+                      className="w-32 h-32 object-cover mb-4 brutal-border"
+                    />
+                    <p className="mb-4">Avatar uploaded successfully</p>
+                    <BrutalButton variant="outline" onClick={handleUploadClick}>
+                      Change Avatar
+                    </BrutalButton>
+                  </div>
+                ) : isUploading ? (
+                  <div className="w-full flex flex-col items-center">
+                    <Upload className="w-12 h-12 mb-4 text-brutal-black animate-pulse" />
+                    <p className="mb-4 text-center">Uploading avatar...</p>
+                    <div className="w-full max-w-xs mb-4">
+                      <Progress value={uploadProgress} className="h-2" />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <Image className="w-12 h-12 mb-4 text-brutal-black" />
+                    <p className="mb-4 text-center">
+                      Click to browse your local file system
+                    </p>
+                    <BrutalButton variant="outline" onClick={handleUploadClick}>
+                      Upload Avatar
+                    </BrutalButton>
+                  </>
+                )}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  accept="image/jpeg,image/png"
+                  onChange={handleFileChange}
+                />
               </div>
               <p className="text-xs mt-2">
                 Recommended size: 1000x1000px, Max size: 5MB, Formats: PNG, JPG
@@ -287,7 +394,9 @@ const Create = () => {
             </div>
 
             <div className="mb-6">
-              <label className="block font-bold mb-2">Generate AI Avatar</label>
+              <label className="block font-bold mb-2">
+                Generate AI Avatar (Coming Soon)
+              </label>
               <div className="brutal-border p-4 bg-brutal-black text-brutal-white">
                 <p className="mb-4">
                   Don't have an image? Generate a unique AI avatar for your
@@ -301,7 +410,12 @@ const Create = () => {
                     maxLength={100}
                   />
                 </div>
-                <BrutalButton variant="primary">Generate Avatar</BrutalButton>
+                <BrutalButton
+                  variant="primary"
+                  onClick={() => alert("Coming soon!")}
+                >
+                  Generate Avatar
+                </BrutalButton>
               </div>
             </div>
           </div>
@@ -425,7 +539,7 @@ const Create = () => {
                   Next Step
                 </BrutalButton>
               ) : (
-                <BrutalButton variant="primary">
+                <BrutalButton variant="primary" onClick={handleCreate}>
                   <span className="flex items-center">
                     Create Agent <Zap className="ml-2 w-5 h-5" />
                   </span>

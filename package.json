@@ -18,6 +18,7 @@
     "@injectivelabs/wallet-evm": "^1.14.41",
     "@injectivelabs/wallet-strategy": "^1.14.41",
     "@radix-ui/react-dialog": "^1.1.6",
+    "@radix-ui/react-progress": "^1.1.2",
     "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-toast": "^1.2.6",
     "class-variance-authority": "^0.7.1",
