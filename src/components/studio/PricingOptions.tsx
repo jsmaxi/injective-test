@@ -41,7 +41,7 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({
             </ul>
             <div className="flex items-center">
               <Coins className="w-4 h-4 mr-1" />
-              <span className="font-bold">{option.price} ETH</span>
+              <span className="font-bold">{option.price} INJ</span>
             </div>
           </div>
         ))}
