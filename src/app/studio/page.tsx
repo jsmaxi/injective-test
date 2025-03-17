@@ -7,6 +7,7 @@ import PodcastRecordingForm from "../../components/studio/PodcastRecordingForm";
 import AgentsSidebar from "../../components/studio/AgentsSidebar";
 import LivePodcastsGrid from "../../components/studio/LivePodcastsGrid";
 import { useRouter } from "next/navigation";
+import { useWalletStore } from "@/context/WalletContextProvider";
 
 const Studio = () => {
   const navigate = useRouter();
@@ -72,39 +73,48 @@ const Studio = () => {
     navigate.push(`/podcast-room/live/${podcastId}`);
   };
 
+  const { injectiveAddress } = useWalletStore();
+
   return (
     <div className="min-h-screen flex flex-col bg-brutal-white">
       <Navbar />
 
-      <main className="flex-grow py-12">
-        <div className="container mx-auto px-4">
-          <div className="brutal-border bg-brutal-black text-brutal-white p-6 mb-8">
-            <h1 className="text-3xl md:text-4xl font-display uppercase">
-              Podcast Studio
-            </h1>
-            <p className="mt-2">
-              Create episodes with your AI podcast agents or explore live
-              sessions
-            </p>
-          </div>
-
-          <TabButtons activeTab={activeTab} onTabChange={setActiveTab} />
-
-          {activeTab === "record" ? (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <PodcastRecordingForm userAgents={userAgents} />
-              </div>
-              <AgentsSidebar />
+      {!injectiveAddress ? (
+        <p className="mt-8 ml-8">
+          Please connect your Injective wallet using MetaMask provider to start
+          using this application.
+        </p>
+      ) : (
+        <main className="flex-grow py-12">
+          <div className="container mx-auto px-4">
+            <div className="brutal-border bg-brutal-black text-brutal-white p-6 mb-8">
+              <h1 className="text-3xl md:text-4xl font-display uppercase">
+                Podcast Studio
+              </h1>
+              <p className="mt-2">
+                Create episodes with your AI podcast agents or explore live
+                sessions
+              </p>
             </div>
-          ) : (
-            <LivePodcastsGrid
-              podcasts={livePodcasts}
-              onJoinPodcast={handleJoinLivePodcast}
-            />
-          )}
-        </div>
-      </main>
+
+            <TabButtons activeTab={activeTab} onTabChange={setActiveTab} />
+
+            {activeTab === "record" ? (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <PodcastRecordingForm userAgents={userAgents} />
+                </div>
+                <AgentsSidebar />
+              </div>
+            ) : (
+              <LivePodcastsGrid
+                podcasts={livePodcasts}
+                onJoinPodcast={handleJoinLivePodcast}
+              />
+            )}
+          </div>
+        </main>
+      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { getAddresses } from "@/services/wallet";
-// import { getInjectiveAddress } from "@injectivelabs/sdk-ts";
+import { getInjectiveAddress } from "@injectivelabs/sdk-ts";
 // import { ChainId } from "@injectivelabs/ts-types";
 import React, { createContext, useContext, useState } from "react";
 
@@ -30,10 +30,10 @@ const WalletContextProvider = (props: Props) => {
   async function connectWallet() {
     console.log("connect");
     const [address] = await getAddresses();
-    console.log(address);
-    // setEthereumAddress(address);
-    // setInjectiveAddress(getInjectiveAddress(address));
-    setInjectiveAddress(address);
+    console.log("ETH", address);
+    console.log("INJ", getInjectiveAddress(address));
+    setEthereumAddress(address);
+    setInjectiveAddress(getInjectiveAddress(address));
   }
 
   return (

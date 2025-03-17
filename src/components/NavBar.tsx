@@ -5,6 +5,7 @@ import BrutalButton from "./BrutalButon";
 import { Mic, Zap, Package, Headphones, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useWalletStore } from "@/context/WalletContextProvider";
 
 const NavBar: React.FC = () => {
   const currentPath = usePathname();
@@ -12,6 +13,12 @@ const NavBar: React.FC = () => {
   const isActive = (path: string) => {
     return currentPath === path;
   };
+
+  const { connectWallet, injectiveAddress } = useWalletStore();
+
+  const btnText = injectiveAddress
+    ? `${injectiveAddress.slice(0, 5)}...${injectiveAddress.slice(-3)}`
+    : "Connect Wallet";
 
   return (
     <header className="sticky top-0 z-50 bg-brutal-white border-b-4 border-brutal-black">
@@ -65,7 +72,7 @@ const NavBar: React.FC = () => {
         </nav>
 
         <div className="flex items-center space-x-4">
-          <BrutalButton>Connect Wallet</BrutalButton>
+          <BrutalButton onClick={connectWallet}>{btnText}</BrutalButton>
           <button className="block md:hidden brutal-border bg-brutal-black text-brutal-white p-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"

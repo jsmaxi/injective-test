@@ -14,6 +14,7 @@ import {
   Coins,
   ArrowRight,
 } from "lucide-react";
+import { useWalletStore } from "@/context/WalletContextProvider";
 
 const Create = () => {
   const [step, setStep] = useState(1);
@@ -368,75 +369,84 @@ const Create = () => {
     }
   };
 
+  const { injectiveAddress } = useWalletStore();
+
   return (
     <div className="min-h-screen flex flex-col bg-brutal-white">
       <Navbar />
 
-      <main className="flex-grow py-12">
-        <div className="container mx-auto px-4">
-          <div className="brutal-border bg-brutal-black text-brutal-white p-6 mb-8">
-            <h1 className="text-3xl md:text-4xl font-display uppercase">
-              Create AI Podcast Agent
-            </h1>
-            <p className="mt-2">
-              Design a unique AI agent with custom voice and personality
-            </p>
-          </div>
+      {!injectiveAddress ? (
+        <p className="mt-8 ml-8">
+          Please connect your Injective wallet using MetaMask provider to start
+          using this application.
+        </p>
+      ) : (
+        <main className="flex-grow py-12">
+          <div className="container mx-auto px-4">
+            <div className="brutal-border bg-brutal-black text-brutal-white p-6 mb-8">
+              <h1 className="text-3xl md:text-4xl font-display uppercase">
+                Create AI Podcast Agent
+              </h1>
+              <p className="mt-2">
+                Design a unique AI agent with custom voice and personality
+              </p>
+            </div>
 
-          <div className="mb-8">
-            <div className="brutal-border bg-brutal-offwhite p-4">
-              <h2 className="text-xl font-bold mb-4 uppercase text-center">
-                Steps
-              </h2>
-              <div className="flex justify-between items-center">
-                {Array.from({ length: totalSteps }, (_, i) => i + 1).map(
-                  (stepNumber) => (
-                    <div
-                      key={stepNumber}
-                      className={`w-10 h-10 flex items-center justify-center brutal-border ${
-                        step === stepNumber
-                          ? "bg-brutal-red text-brutal-white"
-                          : step > stepNumber
-                          ? "bg-brutal-black text-brutal-white"
-                          : "bg-brutal-white"
-                      }`}
-                    >
-                      {stepNumber}
-                    </div>
-                  )
-                )}
+            <div className="mb-8">
+              <div className="brutal-border bg-brutal-offwhite p-4">
+                <h2 className="text-xl font-bold mb-4 uppercase text-center">
+                  Steps
+                </h2>
+                <div className="flex justify-between items-center">
+                  {Array.from({ length: totalSteps }, (_, i) => i + 1).map(
+                    (stepNumber) => (
+                      <div
+                        key={stepNumber}
+                        className={`w-10 h-10 flex items-center justify-center brutal-border ${
+                          step === stepNumber
+                            ? "bg-brutal-red text-brutal-white"
+                            : step > stepNumber
+                            ? "bg-brutal-black text-brutal-white"
+                            : "bg-brutal-white"
+                        }`}
+                      >
+                        {stepNumber}
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          {renderStep()}
+            {renderStep()}
 
-          <div className="flex justify-between mt-8">
-            <BrutalButton
-              variant="outline"
-              onClick={() => setStep(Math.max(1, step - 1))}
-              className={step === 1 ? "invisible" : ""}
-            >
-              Back
-            </BrutalButton>
-
-            {step < totalSteps ? (
+            <div className="flex justify-between mt-8">
               <BrutalButton
-                variant="primary"
-                onClick={() => setStep(Math.min(totalSteps, step + 1))}
+                variant="outline"
+                onClick={() => setStep(Math.max(1, step - 1))}
+                className={step === 1 ? "invisible" : ""}
               >
-                Next Step
+                Back
               </BrutalButton>
-            ) : (
-              <BrutalButton variant="primary">
-                <span className="flex items-center">
-                  Create Agent <Zap className="ml-2 w-5 h-5" />
-                </span>
-              </BrutalButton>
-            )}
+
+              {step < totalSteps ? (
+                <BrutalButton
+                  variant="primary"
+                  onClick={() => setStep(Math.min(totalSteps, step + 1))}
+                >
+                  Next Step
+                </BrutalButton>
+              ) : (
+                <BrutalButton variant="primary">
+                  <span className="flex items-center">
+                    Create Agent <Zap className="ml-2 w-5 h-5" />
+                  </span>
+                </BrutalButton>
+              )}
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      )}
     </div>
   );
 };

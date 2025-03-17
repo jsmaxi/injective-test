@@ -70,7 +70,7 @@ const NftContextProvider = (props: Props) => {
         NFT_CONTRACT_ADDRESS,
         toBase64({
           get_owner_nfts: {
-            owner: getInjectiveAddress(injectiveAddress),
+            owner: injectiveAddress,
           },
         })
       )) as unknown as { data: string };
@@ -174,7 +174,7 @@ const NftContextProvider = (props: Props) => {
 
       const msg = MsgExecuteContractCompat.fromJSON({
         contractAddress: NFT_CONTRACT_ADDRESS,
-        sender: getInjectiveAddress(injectiveAddress),
+        sender: injectiveAddress,
         msg: {
           list: {
             token_id: tokenId,
@@ -184,7 +184,7 @@ const NftContextProvider = (props: Props) => {
 
       const response = await msgBroadcastClient.broadcast({
         msgs: msg,
-        injectiveAddress: getInjectiveAddress(injectiveAddress),
+        injectiveAddress: injectiveAddress,
       });
 
       console.log("Response tx hash", response?.txHash);
@@ -217,7 +217,7 @@ const NftContextProvider = (props: Props) => {
 
       const msg = MsgExecuteContractCompat.fromJSON({
         contractAddress: NFT_CONTRACT_ADDRESS,
-        sender: getInjectiveAddress(injectiveAddress),
+        sender: injectiveAddress,
         msg: {
           unlist: {
             token_id: tokenId,
@@ -227,7 +227,7 @@ const NftContextProvider = (props: Props) => {
 
       const response = await msgBroadcastClient.broadcast({
         msgs: msg,
-        injectiveAddress: getInjectiveAddress(injectiveAddress),
+        injectiveAddress: injectiveAddress,
       });
 
       console.log("Response tx hash", response?.txHash);
@@ -255,7 +255,7 @@ const NftContextProvider = (props: Props) => {
 
       const msg = MsgExecuteContractCompat.fromJSON({
         contractAddress: NFT_CONTRACT_ADDRESS,
-        sender: getInjectiveAddress(injectiveAddress),
+        sender: injectiveAddress,
         msg: {
           mint: {
             token_uri: tokenUri,
@@ -266,7 +266,7 @@ const NftContextProvider = (props: Props) => {
 
       const response = await msgBroadcastClient.broadcast({
         msgs: msg,
-        injectiveAddress: getInjectiveAddress(injectiveAddress),
+        injectiveAddress: injectiveAddress,
       });
 
       console.log("Response tx hash", response?.txHash);
