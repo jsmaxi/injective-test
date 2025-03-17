@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-// import Navbar from "@/components/NavBarExample";
 import WalletContextProvider from "@/context/WalletContextProvider";
-import CounterContextProvider from "@/context/CounterContextProvider";
 import NftContextProvider from "@/context/NftContextProvider";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Injective PodcastAI",
@@ -18,13 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased`}>
+        <Toaster />
+        <Sonner />
         <WalletContextProvider>
-          <CounterContextProvider>
-            <NftContextProvider>
-              {/* <Navbar /> */}
-              {children}
-            </NftContextProvider>
-          </CounterContextProvider>
+          <NftContextProvider>{children}</NftContextProvider>
         </WalletContextProvider>
       </body>
     </html>

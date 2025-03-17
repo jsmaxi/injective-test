@@ -15,12 +15,14 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useWalletStore } from "@/context/WalletContextProvider";
+import { toast } from "sonner";
 
 const Create = () => {
   const [step, setStep] = useState(1);
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedVoice, setSelectedVoice] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const totalSteps = 4;
 
@@ -69,6 +71,36 @@ const Create = () => {
     "Arabic",
   ];
 
+  const expertiseTags = [
+    "Crypto",
+    "Tech",
+    "Injective",
+    "AI",
+    "Hacks",
+    "Sports",
+    "Philosophy",
+    "History",
+    "Music",
+    "Culture",
+    "Social",
+    "Math",
+  ];
+
+  const handleTagToggle = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      // Remove tag if already selected
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    } else {
+      // Add tag if we have less than 3 selected
+      if (selectedTags.length < 3) {
+        setSelectedTags([...selectedTags, tag]);
+      } else {
+        // Show toast if trying to select more than 3
+        toast.warning("You can select a maximum of 3 tags");
+      }
+    }
+  };
+
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -84,6 +116,7 @@ const Create = () => {
                 type="text"
                 className="brutal-border w-full p-3 bg-brutal-offwhite"
                 placeholder="Choose a unique name"
+                maxLength={50}
               />
             </div>
 
@@ -95,6 +128,7 @@ const Create = () => {
                 className="brutal-border w-full p-3 bg-brutal-offwhite"
                 rows={4}
                 placeholder="Describe your agent's personality (e.g., sarcastic, friendly, analytical, etc.)"
+                maxLength={300}
               />
             </div>
 
@@ -126,31 +160,31 @@ const Create = () => {
 
             <div className="mb-6">
               <label className="block font-bold mb-2">
-                Expertise Areas (Select up to 5)
+                Expertise Tags (Select 1-3)
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                {[
-                  "Cryptocurrency",
-                  "Technology",
-                  "Science",
-                  "Art",
-                  "Music",
-                  "Business",
-                  "Finance",
-                  "Sports",
-                  "Health",
-                  "Philosophy",
-                  "Politics",
-                  "History",
-                ].map((area) => (
+                {expertiseTags.map((tag) => (
                   <div
-                    key={area}
-                    className="brutal-border bg-brutal-offwhite p-2 text-center text-sm cursor-pointer hover:bg-brutal-black hover:text-brutal-white transition-colors"
+                    key={tag}
+                    className={`brutal-border p-2 text-center text-sm cursor-pointer transition-colors ${
+                      selectedTags.includes(tag)
+                        ? "bg-black text-white"
+                        : "bg-brutal-offwhite hover:bg-brutal-black hover:text-brutal-white"
+                    }`}
+                    onClick={() => handleTagToggle(tag)}
                   >
-                    {area}
+                    {tag}
                   </div>
                 ))}
               </div>
+              <p className="text-xs mt-2 text-gray-500">
+                Selected: {selectedTags.length}/3
+                {selectedTags.length === 0 && (
+                  <span className="text-brutal-red ml-1">
+                    At least one tag is required
+                  </span>
+                )}
+              </p>
             </div>
           </div>
         );
@@ -264,6 +298,7 @@ const Create = () => {
                     type="text"
                     className="brutal-border w-full p-3 bg-brutal-white text-brutal-black"
                     placeholder="Describe your avatar (e.g., cyberpunk robot with neon lights)"
+                    maxLength={100}
                   />
                 </div>
                 <BrutalButton variant="primary">Generate Avatar</BrutalButton>
