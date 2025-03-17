@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import { pinToIpfs, pinToIpfsJson } from "@/utils/pinata";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +19,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Link from "next/link";
+import { useNftStore } from "@/context/NftContextProvider";
 
 const Create = () => {
   const [uploading, setUploading] = useState(false);
@@ -31,6 +33,7 @@ const Create = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedPitch, setSelectedPitch] = useState("3");
   const [selectedSpeed, setSelectedSpeed] = useState("3");
+  const [marketPrice, setMarketPrice] = useState("0.01");
 
   const [imageIpfsHash, setImageIpfsHash] = useState("");
   const [uploadedAvatar, setUploadedAvatar] = useState<string | null>(null);
@@ -41,6 +44,9 @@ const Create = () => {
 
   const [metadataDialogOpen, setMetadataDialogOpen] = useState(false);
   const [metadataHash, setMetadataHash] = useState("");
+  const [txHash, setTxHash] = useState("");
+
+  const { mintNft } = useNftStore();
 
   const totalSteps = 4;
 
@@ -194,6 +200,11 @@ const Create = () => {
       return;
     }
 
+    if (!marketPrice) {
+      alert("Market price is required!");
+      return;
+    }
+
     console.log(
       name,
       description,
@@ -204,7 +215,8 @@ const Create = () => {
       selectedLanguage,
       selectedPitch,
       selectedSpeed,
-      imageIpfsHash
+      imageIpfsHash,
+      marketPrice
     );
 
     try {
@@ -230,8 +242,14 @@ const Create = () => {
       try {
         const res = await pinToIpfsJson(jsonBlob);
         console.log("Json ipfs hash", res?.IpfsHash);
-        setMetadataHash(res?.IpfsHash);
-        setMetadataDialogOpen(true);
+        const hashMetadata = res?.IpfsHash;
+        if (hashMetadata) {
+          setMetadataHash(hashMetadata);
+          const result = (Number(marketPrice) * Math.pow(10, 18)).toString(); // 10^18 as INJ has 18 decimals
+          const hashTransaction = await mintNft(hashMetadata, result);
+          setTxHash(hashTransaction);
+          setMetadataDialogOpen(true);
+        }
       } catch (e) {
         alert("Failed to upload json to Pinata IPFS!");
       }
@@ -300,6 +318,35 @@ const Create = () => {
       }, 2000);
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleMarketPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Enforce valid numeric input
+    if (
+      value === "" ||
+      (!isNaN(Number(value)) && Number(value) >= 0 && Number(value) <= 10)
+    ) {
+      setMarketPrice(value);
+    }
+  };
+
+  const handleMarketPriceBlur = () => {
+    // Format and validate on blur
+    if (marketPrice === "") {
+      setMarketPrice("0");
+      return;
+    }
+
+    const numValue = Number(marketPrice);
+
+    if (numValue > 10) {
+      setMarketPrice("10");
+      toast.warning("Maximum price is 10 INJ");
+    } else {
+      // Format to 3 decimal places
+      setMarketPrice(Number(numValue).toFixed(3));
+    }
   };
 
   const renderStep = () => {
@@ -590,6 +637,27 @@ const Create = () => {
             </h2>
 
             <div className="mb-6">
+              <div className="brutal-border p-4 bg-brutal-offwhite mb-6">
+                <h3 className="font-bold uppercase mb-2">Market Price (INJ)</h3>
+                <div className="brutal-border bg-brutal-white p-3">
+                  <Input
+                    type="text"
+                    value={marketPrice}
+                    onChange={handleMarketPriceChange}
+                    onBlur={handleMarketPriceBlur}
+                    className="text-xl font-bold w-full"
+                    step="0.001"
+                    min="0"
+                    max="10"
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    Set a price between 0 and 10 INJ (e.g. 0.01)
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-6">
               <div className="brutal-border bg-brutal-black p-4 text-brutal-white mb-6">
                 <h3 className="font-bold uppercase mb-2">Creation Fee</h3>
                 <div className="flex items-center">
@@ -727,7 +795,7 @@ const Create = () => {
           <div className="flex flex-col items-center p-4">
             <div className="brutal-border p-4 bg-brutal-offwhite w-full mb-4">
               <p className="mb-2 font-semibold">
-                Please check the metadata file here:
+                Please check the metadata file and transaction here:
               </p>
               <p className="brutal-border bg-brutal-white p-3 break-all">
                 <Link
@@ -735,6 +803,18 @@ const Create = () => {
                   href={"https://gateway.pinata.cloud/ipfs/" + metadataHash}
                 >
                   https://gateway.pinata.cloud/ipfs/{metadataHash}
+                </Link>
+              </p>
+              <p className="brutal-border bg-brutal-white p-3 break-all">
+                <Link
+                  target="_blank"
+                  href={
+                    "https://testnet.explorer.injective.network/transaction/" +
+                    txHash
+                  }
+                >
+                  https://testnet.explorer.injective.network/transaction/
+                  {txHash}
                 </Link>
               </p>
             </div>

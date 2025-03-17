@@ -24,7 +24,7 @@ type StoreState = {
   buyNft: (tokenId: string, price: string) => void;
   listNft: (tokenId: string) => void;
   unlistNft: (tokenId: string) => void;
-  mintNft: (tokenUri: string, nftPrice: string) => void;
+  mintNft: (tokenUri: string, nftPrice: string) => Promise<string>;
 };
 
 const NftContext = createContext<StoreState>({
@@ -34,7 +34,7 @@ const NftContext = createContext<StoreState>({
   buyNft: (tokenId: string, price: string) => {},
   listNft: (tokenId: string) => {},
   unlistNft: (tokenId: string) => {},
-  mintNft: (tokenUri: string, nftPrice: string) => {},
+  mintNft: (tokenUri: string, nftPrice: string) => Promise.resolve(""),
 });
 
 export const useNftStore = () => useContext(NftContext);
@@ -242,10 +242,10 @@ const NftContextProvider = (props: Props) => {
     }
   }
 
-  async function mintNft(tokenUri: string, nftPrice: string) {
+  async function mintNft(tokenUri: string, nftPrice: string): Promise<string> {
     if (!injectiveAddress) {
       alert("No Wallet Connected");
-      return;
+      return "";
     }
 
     setStatus(Status.Loading);
@@ -272,9 +272,12 @@ const NftContextProvider = (props: Props) => {
       console.log("Response tx hash", response?.txHash);
 
       fetchOwnerNfts();
+
+      return response?.txHash;
     } catch (e) {
       console.log((e as any).message);
       alert((e as any).message);
+      return "";
     } finally {
       setStatus(Status.Idle);
     }
