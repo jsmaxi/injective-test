@@ -2,7 +2,6 @@
 
 import { NFT_CONTRACT_ADDRESS } from "@/services/constants";
 import { chainGrpcWasmApi, msgBroadcastClient } from "@/services/services";
-import { getAddresses } from "@/services/wallet";
 import {
   MsgExecuteContractCompat,
   fromBase64,
@@ -22,16 +21,20 @@ type StoreState = {
   allListedNfts: nft[];
   ownerNfts: nft[];
   isLoading: boolean;
-  //   incrementCount: () => void;
-  //   setContractCounter: (number: string) => void;
+  buyNft: (tokenId: string, price: string) => void;
+  listNft: (tokenId: string) => void;
+  unlistNft: (tokenId: string) => void;
+  mintNft: (tokenUri: string, nftPrice: string) => void;
 };
 
 const NftContext = createContext<StoreState>({
   allListedNfts: [],
   ownerNfts: [],
   isLoading: true,
-  //   incrementCount: () => {},
-  //   setContractCounter: (number) => {},
+  buyNft: (tokenId: string, price: string) => {},
+  listNft: (tokenId: string) => {},
+  unlistNft: (tokenId: string) => {},
+  mintNft: (tokenUri: string, nftPrice: string) => {},
 });
 
 export const useNftStore = () => useContext(NftContext);
@@ -56,18 +59,25 @@ const NftContextProvider = (props: Props) => {
 
   async function fetchOwnerNfts() {
     try {
+      if (!injectiveAddress) {
+        console.log("No Wallet Connected");
+        return;
+      }
+
+      console.log("Fetching owner's NFTs");
+
       const response = (await chainGrpcWasmApi.fetchSmartContractState(
         NFT_CONTRACT_ADDRESS,
         toBase64({
           get_owner_nfts: {
-            owner: "inj15tcqqeafzl2kascdsl5n5y4sg67h6thclpn60l",
+            owner: getInjectiveAddress(injectiveAddress),
           },
         })
       )) as unknown as { data: string };
 
       const n = fromBase64(response.data);
 
-      console.log("owner nfts", n.nfts);
+      console.log("Owner nfts", n.nfts);
 
       setOwnerNfts(n.nfts);
     } catch (e) {
@@ -78,6 +88,8 @@ const NftContextProvider = (props: Props) => {
 
   async function fetchAllListedNfts() {
     try {
+      console.log("Fetching all listed NFTs");
+
       const response = (await chainGrpcWasmApi.fetchSmartContractState(
         NFT_CONTRACT_ADDRESS,
         toBase64({
@@ -87,7 +99,7 @@ const NftContextProvider = (props: Props) => {
 
       const n = fromBase64(response.data);
 
-      console.log("all listed nfts", n.nfts);
+      console.log("All listed nfts", n.nfts);
 
       setAllListedNfts(n.nfts);
     } catch (e) {
@@ -96,88 +108,177 @@ const NftContextProvider = (props: Props) => {
     }
   }
 
-  //   async function incrementCount() {
-  //     if (!injectiveAddress) {
-  //       alert("No Wallet Connected");
-  //       return;
-  //     }
+  async function buyNft(tokenId: string, price: string) {
+    if (!injectiveAddress) {
+      alert("No Wallet Connected");
+      return;
+    }
 
-  //     setStatus(Status.Loading);
+    if (Number(tokenId) < 0) {
+      alert("Token Id must be >= 0");
+      return;
+    }
 
-  //     try {
-  //       console.log(
-  //         injectiveAddress,
-  //         getInjectiveAddress(injectiveAddress),
-  //         COUNTER_CONTRACT_ADDRESS
-  //       );
-  //       console.log("starting");
+    setStatus(Status.Loading);
 
-  //       const msg = MsgExecuteContractCompat.fromJSON({
-  //         contractAddress: COUNTER_CONTRACT_ADDRESS,
-  //         sender: getInjectiveAddress(injectiveAddress),
-  //         msg: {
-  //           increment: {},
-  //         },
-  //       });
+    try {
+      console.log("Buying NFT");
 
-  //       console.log("broadcasting");
+      const msg = MsgExecuteContractCompat.fromJSON({
+        contractAddress: NFT_CONTRACT_ADDRESS,
+        sender: getInjectiveAddress(injectiveAddress),
+        msg: {
+          buy: {
+            token_id: tokenId,
+          },
+        },
+        funds: [
+          {
+            denom: "inj",
+            amount: price,
+          },
+        ],
+      });
 
-  //       await msgBroadcastClient.broadcast({
-  //         msgs: msg,
-  //         injectiveAddress: getInjectiveAddress(injectiveAddress),
-  //       });
+      const response = await msgBroadcastClient.broadcast({
+        msgs: msg,
+        injectiveAddress: getInjectiveAddress(injectiveAddress),
+      });
 
-  //       console.log("fetching");
+      console.log("Response tx hash", response?.txHash);
 
-  //       fetchCount();
-  //     } catch (e) {
-  //       alert((e as any).message);
-  //     } finally {
-  //       setStatus(Status.Idle);
-  //     }
-  //   }
+      fetchOwnerNfts();
+    } catch (e) {
+      console.log((e as any).message);
+      alert((e as any).message);
+    } finally {
+      setStatus(Status.Idle);
+    }
+  }
 
-  //   async function setContractCounter(number: string) {
-  //     if (!injectiveAddress) {
-  //       alert("No Wallet Connected");
-  //       return;
-  //     }
+  async function listNft(tokenId: string) {
+    if (!injectiveAddress) {
+      alert("No Wallet Connected");
+      return;
+    }
 
-  //     if (Number(number) > 100 || Number(number) < -100) {
-  //       alert("Number must we within -100 and 100");
-  //       return;
-  //     }
+    if (Number(tokenId) < 0) {
+      alert("Token Id must be >= 0");
+      return;
+    }
 
-  //     setStatus(Status.Loading);
+    setStatus(Status.Loading);
 
-  //     try {
-  //       console.log(
-  //         injectiveAddress,
-  //         getInjectiveAddress(injectiveAddress),
-  //         COUNTER_CONTRACT_ADDRESS
-  //       );
-  //       const msg = MsgExecuteContractCompat.fromJSON({
-  //         contractAddress: COUNTER_CONTRACT_ADDRESS,
-  //         sender: getInjectiveAddress(injectiveAddress),
-  //         msg: {
-  //           reset: {
-  //             count: parseInt(number, 10),
-  //           },
-  //         },
-  //       });
+    try {
+      console.log("Listing NFT");
 
-  //       await msgBroadcastClient.broadcast({
-  //         msgs: msg,
-  //         injectiveAddress: getInjectiveAddress(injectiveAddress),
-  //       });
+      const msg = MsgExecuteContractCompat.fromJSON({
+        contractAddress: NFT_CONTRACT_ADDRESS,
+        sender: getInjectiveAddress(injectiveAddress),
+        msg: {
+          list: {
+            token_id: tokenId,
+          },
+        },
+      });
 
-  //       fetchCount();
-  //     } catch (e) {
-  //       alert((e as any).message);
-  //     } finally {
-  //       setStatus(Status.Idle);
-  //     }
-  //   }
+      const response = await msgBroadcastClient.broadcast({
+        msgs: msg,
+        injectiveAddress: getInjectiveAddress(injectiveAddress),
+      });
+
+      console.log("Response tx hash", response?.txHash);
+
+      fetchAllListedNfts();
+      fetchOwnerNfts();
+    } catch (e) {
+      console.log((e as any).message);
+      alert((e as any).message);
+    } finally {
+      setStatus(Status.Idle);
+    }
+  }
+
+  async function unlistNft(tokenId: string) {
+    if (!injectiveAddress) {
+      alert("No Wallet Connected");
+      return;
+    }
+
+    if (Number(tokenId) < 0) {
+      alert("Token Id must be >= 0");
+      return;
+    }
+
+    setStatus(Status.Loading);
+
+    try {
+      console.log("Unlisting NFT");
+
+      const msg = MsgExecuteContractCompat.fromJSON({
+        contractAddress: NFT_CONTRACT_ADDRESS,
+        sender: getInjectiveAddress(injectiveAddress),
+        msg: {
+          unlist: {
+            token_id: tokenId,
+          },
+        },
+      });
+
+      const response = await msgBroadcastClient.broadcast({
+        msgs: msg,
+        injectiveAddress: getInjectiveAddress(injectiveAddress),
+      });
+
+      console.log("Response tx hash", response?.txHash);
+
+      fetchAllListedNfts();
+      fetchOwnerNfts();
+    } catch (e) {
+      console.log((e as any).message);
+      alert((e as any).message);
+    } finally {
+      setStatus(Status.Idle);
+    }
+  }
+
+  async function mintNft(tokenUri: string, nftPrice: string) {
+    if (!injectiveAddress) {
+      alert("No Wallet Connected");
+      return;
+    }
+
+    setStatus(Status.Loading);
+
+    try {
+      console.log("Minting NFT");
+
+      const msg = MsgExecuteContractCompat.fromJSON({
+        contractAddress: NFT_CONTRACT_ADDRESS,
+        sender: getInjectiveAddress(injectiveAddress),
+        msg: {
+          mint: {
+            token_uri: tokenUri,
+            price: nftPrice,
+          },
+        },
+      });
+
+      const response = await msgBroadcastClient.broadcast({
+        msgs: msg,
+        injectiveAddress: getInjectiveAddress(injectiveAddress),
+      });
+
+      console.log("Response tx hash", response?.txHash);
+
+      fetchOwnerNfts();
+    } catch (e) {
+      console.log((e as any).message);
+      alert((e as any).message);
+    } finally {
+      setStatus(Status.Idle);
+    }
+  }
 
   return (
     <NftContext.Provider
@@ -185,8 +286,10 @@ const NftContextProvider = (props: Props) => {
         allListedNfts,
         ownerNfts,
         isLoading,
-        // incrementCount,
-        // setContractCounter,
+        buyNft,
+        listNft,
+        unlistNft,
+        mintNft,
       }}
     >
       {props.children}
