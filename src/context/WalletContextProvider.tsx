@@ -3,7 +3,7 @@
 import { getAddresses } from "@/services/wallet";
 import { getInjectiveAddress } from "@injectivelabs/sdk-ts";
 // import { ChainId } from "@injectivelabs/ts-types";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 type StoreState = {
   injectiveAddress: string;
@@ -28,6 +28,10 @@ type Props = {
 const WalletContextProvider = (props: Props) => {
   const [ethereumAddress, setEthereumAddress] = useState("");
   const [injectiveAddress, setInjectiveAddress] = useState("");
+
+  useEffect(() => {
+    connectWallet();
+  }, []);
 
   async function connectWallet() {
     console.log("connect");

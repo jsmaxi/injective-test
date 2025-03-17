@@ -7,8 +7,11 @@ import { Zap, Image, Mic, Coins, Upload } from "lucide-react";
 import { useWalletStore } from "@/context/WalletContextProvider";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
+import axios from "axios";
+import { pinToIpfs } from "@/utils/pinata";
 
 const Create = () => {
+  const [uploading, setUploading] = useState(false);
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -19,6 +22,7 @@ const Create = () => {
   const [selectedPitch, setSelectedPitch] = useState("3");
   const [selectedSpeed, setSelectedSpeed] = useState("3");
 
+  const [imageIpfsHash, setImageIpfsHash] = useState("");
   const [uploadedAvatar, setUploadedAvatar] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -102,53 +106,58 @@ const Create = () => {
     }
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     console.log("creating...");
 
-    if (!name) {
-      alert("Agent name is required!");
-      return;
-    }
+    // if (!name) {
+    //   alert("Agent name is required!");
+    //   return;
+    // }
 
-    if (!description) {
-      alert("Agent personality description is required!");
-      return;
-    }
+    // if (!description) {
+    //   alert("Agent personality description is required!");
+    //   return;
+    // }
 
-    if (!selectedGender) {
-      alert("Agent gender is required!");
-      return;
-    }
+    // if (!selectedGender) {
+    //   alert("Agent gender is required!");
+    //   return;
+    // }
 
-    if (!selectedTags || selectedTags.length === 0) {
-      alert("Agent tags are required!");
-      return;
-    }
+    // if (!selectedTags || selectedTags.length === 0) {
+    //   alert("Agent tags are required!");
+    //   return;
+    // }
 
-    if (!selectedVoice) {
-      alert("Agent voice is required!");
-      return;
-    }
+    // if (!selectedVoice) {
+    //   alert("Agent voice is required!");
+    //   return;
+    // }
 
-    if (!selectedLanguage) {
-      alert("Agent language is required!");
-      return;
-    }
+    // if (!selectedLanguage) {
+    //   alert("Agent language is required!");
+    //   return;
+    // }
 
-    if (!selectedPitch) {
-      alert("Agent pitch is required!");
-      return;
-    }
+    // if (!selectedPitch) {
+    //   alert("Agent pitch is required!");
+    //   return;
+    // }
 
-    if (!selectedSpeed) {
-      alert("Agent speed is required!");
-      return;
-    }
+    // if (!selectedSpeed) {
+    //   alert("Agent speed is required!");
+    //   return;
+    // }
 
-    if (!uploadedAvatar) {
-      alert("Agent avatar is required!");
-      return;
-    }
+    // if (!uploadedAvatar) {
+    //   alert("Agent avatar is required!");
+    //   return;
+    // }
+
+    // if (!imageIpfsHash) {
+    //   alert("Image IPFS hash is required!");
+    //   return;
+    // }
 
     console.log(
       name,
@@ -159,15 +168,26 @@ const Create = () => {
       selectedLanguage,
       selectedPitch,
       selectedSpeed,
-      uploadedAvatar
+      uploadedAvatar,
+      imageIpfsHash
     );
+
+    try {
+      setUploading(true);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -186,6 +206,14 @@ const Create = () => {
     // Simulate upload progress
     setIsUploading(true);
     setUploadProgress(0);
+
+    try {
+      const res = await pinToIpfs(file);
+      console.log("Image ipfs hash", res?.IpfsHash);
+      setImageIpfsHash(res?.IpfsHash);
+    } catch (e) {
+      alert("Failed to upload image to Pinata IPFS!");
+    }
 
     const interval = setInterval(() => {
       setUploadProgress((prev) => {
@@ -596,7 +624,11 @@ const Create = () => {
                   Next Step
                 </BrutalButton>
               ) : (
-                <BrutalButton variant="primary" onClick={handleCreate}>
+                <BrutalButton
+                  variant="primary"
+                  onClick={handleCreate}
+                  disabled={uploading}
+                >
                   <span className="flex items-center">
                     Create Agent <Zap className="ml-2 w-5 h-5" />
                   </span>

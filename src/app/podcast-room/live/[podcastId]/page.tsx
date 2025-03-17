@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
 import {
   Mic,
   MicOff,
@@ -16,9 +15,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useWalletStore } from "@/context/WalletContextProvider";
 
 const PodcastRoom = () => {
-  const { podcastId, type } = useParams();
+  // const { podcastId, type } = useParams();
   const navigate = useRouter();
-  const [isLive, setIsLive] = useState(type === "live");
+  const [isLive, setIsLive] = useState(true);
   const [listeners, setListeners] = useState(
     isLive ? Math.floor(Math.random() * 100) + 20 : 1
   );
