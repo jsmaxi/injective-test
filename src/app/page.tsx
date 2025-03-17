@@ -9,6 +9,7 @@ function Home({}: Props) {
   const [inputCount, setInputCount] = useState("0");
   const { count, isLoading, incrementCount, setContractCounter } =
     useCounterStore();
+
   useEffect(() => {
     setInputCount(count.toString());
   }, [count]);
@@ -16,6 +17,7 @@ function Home({}: Props) {
   function handleSetCount() {
     setContractCounter(inputCount);
   }
+
   return (
     <div className="flex justify-center pt-20">
       <div className="bg-white rounded-lg p-5 text-center">

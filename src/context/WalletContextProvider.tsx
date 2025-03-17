@@ -1,9 +1,9 @@
 "use client";
 
 import { getAddresses } from "@/services/wallet";
-import { getInjectiveAddress } from "@injectivelabs/sdk-ts";
-import { ChainId } from "@injectivelabs/ts-types";
-import React, { createContext, useContext, useEffect, useState } from "react";
+// import { getInjectiveAddress } from "@injectivelabs/sdk-ts";
+// import { ChainId } from "@injectivelabs/ts-types";
+import React, { createContext, useContext, useState } from "react";
 
 type StoreState = {
   injectiveAddress: string;
@@ -28,11 +28,7 @@ const WalletContextProvider = (props: Props) => {
   const [injectiveAddress, setInjectiveAddress] = useState("");
 
   async function connectWallet() {
-    console.log("click connect");
-    // if (!(window as any).keplr) {
-    //   throw new Error("Keplr extension is not installed");
-    // }
-    // await (window as any).keplr.enable(ChainId.Testnet);
+    console.log("connect");
     const [address] = await getAddresses();
     console.log(address);
     // setEthereumAddress(address);

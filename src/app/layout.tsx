@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/NavBar";
 import WalletContextProvider from "@/context/WalletContextProvider";
 import CounterContextProvider from "@/context/CounterContextProvider";
+import NftContextProvider from "@/context/NftContextProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,8 +33,10 @@ export default function RootLayout({
       >
         <WalletContextProvider>
           <CounterContextProvider>
-            <Navbar />
-            {children}
+            <NftContextProvider>
+              <Navbar />
+              {children}
+            </NftContextProvider>
           </CounterContextProvider>
         </WalletContextProvider>
       </body>
