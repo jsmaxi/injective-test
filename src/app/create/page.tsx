@@ -22,7 +22,7 @@ const Create = () => {
   const [selectedVoice, setSelectedVoice] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
 
-  const totalSteps = 5;
+  const totalSteps = 4;
 
   // Sample voices data
   const voices = [
@@ -88,6 +88,17 @@ const Create = () => {
             </div>
 
             <div className="mb-6">
+              <label className="block font-bold mb-2">
+                Personality Description
+              </label>
+              <textarea
+                className="brutal-border w-full p-3 bg-brutal-offwhite"
+                rows={4}
+                placeholder="Describe your agent's personality (e.g., sarcastic, friendly, analytical, etc.)"
+              />
+            </div>
+
+            <div className="mb-6">
               <label className="block font-bold mb-2">Gender</label>
               <div className="grid grid-cols-2 gap-4">
                 <button
@@ -143,77 +154,8 @@ const Create = () => {
             </div>
           </div>
         );
+
       case 2:
-        return (
-          <div className="brutal-card">
-            <h2 className="text-xl font-bold uppercase mb-6">
-              Personality Traits
-            </h2>
-
-            <div className="mb-6">
-              <label className="block font-bold mb-2">
-                Personality Description
-              </label>
-              <textarea
-                className="brutal-border w-full p-3 bg-brutal-offwhite"
-                rows={4}
-                placeholder="Describe your agent's personality (e.g., sarcastic, friendly, analytical, etc.)"
-              />
-            </div>
-
-            <div className="mb-6">
-              <label className="block font-bold mb-2">
-                Communication Style
-              </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="brutal-border p-3 bg-brutal-offwhite">
-                  <div className="font-bold mb-1">Formality</div>
-                  <input type="range" min="1" max="10" className="w-full" />
-                  <div className="flex justify-between text-xs">
-                    <span>Casual</span>
-                    <span>Formal</span>
-                  </div>
-                </div>
-                <div className="brutal-border p-3 bg-brutal-offwhite">
-                  <div className="font-bold mb-1">Pace</div>
-                  <input type="range" min="1" max="10" className="w-full" />
-                  <div className="flex justify-between text-xs">
-                    <span>Slow</span>
-                    <span>Fast</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <label className="block font-bold mb-2">Traits</label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {[
-                  "Funny",
-                  "Serious",
-                  "Thoughtful",
-                  "Bold",
-                  "Emotional",
-                  "Logical",
-                  "Creative",
-                  "Practical",
-                  "Optimistic",
-                  "Skeptical",
-                  "Kind",
-                  "Critical",
-                ].map((trait) => (
-                  <div
-                    key={trait}
-                    className="brutal-border bg-brutal-offwhite p-2 text-center text-sm cursor-pointer hover:bg-brutal-black hover:text-brutal-white transition-colors"
-                  >
-                    {trait}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        );
-      case 3:
         return (
           <div className="brutal-card">
             <h2 className="text-xl font-bold uppercase mb-6">
@@ -291,7 +233,7 @@ const Create = () => {
             </div>
           </div>
         );
-      case 4:
+      case 3:
         return (
           <div className="brutal-card">
             <h2 className="text-xl font-bold uppercase mb-6">NFT Avatar</h2>
@@ -329,7 +271,7 @@ const Create = () => {
             </div>
           </div>
         );
-      case 5:
+      case 4:
         return (
           <div className="brutal-card">
             <h2 className="text-xl font-bold uppercase mb-6">
@@ -362,7 +304,10 @@ const Create = () => {
 
               <div className="brutal-border p-4 bg-brutal-offwhite">
                 <label className="flex items-start">
-                  <input type="checkbox" className="brutal-border mt-1 mr-2" />
+                  <input
+                    type="checkbox"
+                    className="brutal-border mt-1 mr-2 w-4 h-4"
+                  />
                   <span className="text-sm">
                     I confirm that I own or have rights to all content used in
                     creating this AI agent, and I agree to the Terms of Service.
