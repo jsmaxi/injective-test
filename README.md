@@ -8,6 +8,10 @@ Create, buy, and sell AI podcast agents on the first marketplace combining crypt
 
 Web Application: https://injective-podcastai.vercel.app/
 
+Deployed NFT contract address example (on Injective Testnet): inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2
+
+[Commands](./COMMANDS.txt)
+
 ## Overview
 
 PodcastAI enables users to design unique AI podcast hosts with customizable:

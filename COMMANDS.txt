@@ -1,0 +1,63 @@
+```
+
+injectived keys add testuser
+exmaple psw: 12345678
+
+cargo schema
+cargo build
+cargo wasm
+
+docker run --rm -v "$(pwd)":/code \
+  --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
+  --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+  cosmwasm/rust-optimizer:0.16.1
+
+yes 12345678 | injectived tx wasm store artifacts/nft_contract.wasm --from=testuser --chain-id="injective-888" --yes --gas-prices=500000000inj --gas=20000000 --node=https://testnet.sentry.tm.injective.network:443
+
+example "code_id": "27100"
+
+INIT='{"name":"TestNFT","symbol":"TNFT"}'
+yes 12345678 | injectived tx wasm instantiate 27100 $INIT --label="NFT Test Contract" --from=testuser --chain-id="injective-888" --yes --gas-prices=500000000inj --gas=20000000 --no-admin --node=https://testnet.sentry.tm.injective.network:443
+
+"_contract_address": "inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2",
+
+injectived query wasm contract-state all inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 \
+--node=https://testnet.sentry.tm.injective.network:443 \
+--output json
+
+injectived query wasm contract-state smart inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"get_nft":{"token_id":"0"}}' \
+--node=https://testnet.sentry.tm.injective.network:443 \
+--output json
+
+injectived query wasm contract-state smart inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"get_owner_nfts":{"owner":"inj1rz6vnxwz6xglukgjzzsujcqh0gxnwzhe2nuzfz"}}' \
+--node=https://testnet.sentry.tm.injective.network:443 \
+--output json
+
+injectived query wasm contract-state smart inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"get_listed_nfts":{}}' \
+--node=https://testnet.sentry.tm.injective.network:443 \
+--output json
+
+price of 0.01 INJ:
+
+yes 12345678 | injectived tx wasm execute inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"mint":{"token_uri":"uri","price":"10000000000000000"}}' --from=testuser --chain-id="injective-888" --yes --fees=1000000000000000inj --gas=2000000 --node=https://testnet.sentry.tm.injective.network:443 --output json
+
+yes 12345678 | injectived tx wasm execute inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"list":{"token_id":"0"}}' --from=testuser --chain-id="injective-888" --yes --fees=1000000000000000inj --gas=2000000 --node=https://testnet.sentry.tm.injective.network:443 --output json
+
+injectived query wasm contract-state smart inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"get_listed_nfts":{}}' --node=https://testnet.sentry.tm.injective.network:443 --output json
+
+injectived keys add testuser2
+12345678
+
+https://testnet.faucet.injective.network/
+
+yes 12345678 | injectived tx wasm execute inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"buy":{"token_id":"0"}}' --from=testuser2 --chain-id="injective-888" --yes --fees=1000000000000000inj --gas=2000000 --node=https://testnet.sentry.tm.injective.network:443 --output json --amount=10000000000000000inj
+
+injectived query wasm contract-state smart inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"get_owner_nfts":{"owner":"inj1rz6vnxwz6xglukgjzzsujcqh0gxnwzhe2nuzfz"}}' \
+--node=https://testnet.sentry.tm.injective.network:443 \
+--output json
+
+injectived query wasm contract-state smart inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"get_owner_nfts":{"owner":"inj15tcqqeafzl2kascdsl5n5y4sg67h6thclpn60l"}}' \
+--node=https://testnet.sentry.tm.injective.network:443 \
+--output json
+
+```
