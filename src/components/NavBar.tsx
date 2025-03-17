@@ -2,11 +2,13 @@
 
 import React, { useState } from "react";
 import BrutalButton from "./BrutalButon";
-import { Mic, Zap, Package, Headphones, User } from "lucide-react";
+import { Mic, Zap, Package, Headphones, User, Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "./ui/sheet";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useWalletStore } from "@/context/WalletContextProvider";
 import WalletDialog from "./WalletDialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const NavBar: React.FC = () => {
   const [walletDialogOpen, setWalletDialogOpen] = useState(false);
@@ -16,6 +18,8 @@ const NavBar: React.FC = () => {
   const isActive = (path: string) => {
     return currentPath === path;
   };
+
+  const isMobile = useIsMobile();
 
   const { connectWallet, disconnectWallet, injectiveAddress, ethereumAddress } =
     useWalletStore();
@@ -36,6 +40,56 @@ const NavBar: React.FC = () => {
     disconnectWallet();
     setWalletDialogOpen(false);
   };
+
+  const mobileLinks = () => (
+    <div className="flex flex-col space-y-6 p-4">
+      <Link
+        href="/market"
+        className={`font-mono uppercase ${
+          isActive("/market") ? "text-brutal-red" : "hover:text-brutal-red"
+        } transition-colors flex items-center`}
+      >
+        <Package className="w-5 h-5 mr-3" />
+        Market
+      </Link>
+      <Link
+        href="/create"
+        className={`font-mono uppercase ${
+          isActive("/create") ? "text-brutal-red" : "hover:text-brutal-red"
+        } transition-colors flex items-center`}
+      >
+        <Zap className="w-5 h-5 mr-3" />
+        Create
+      </Link>
+      <Link
+        href="/studio"
+        className={`font-mono uppercase ${
+          isActive("/studio") ? "text-brutal-red" : "hover:text-brutal-red"
+        } transition-colors flex items-center`}
+      >
+        <Headphones className="w-5 h-5 mr-3" />
+        Studio
+      </Link>
+      <Link
+        href="/agents"
+        className={`font-mono uppercase ${
+          isActive("/agents") ? "text-brutal-red" : "hover:text-brutal-red"
+        } transition-colors flex items-center`}
+      >
+        <User className="w-5 h-5 mr-3" />
+        Agents
+      </Link>
+
+      <div className="pt-4 border-t-2 border-brutal-black">
+        <BrutalButton
+          onClick={handleConnectWallet}
+          className="w-full justify-center"
+        >
+          {btnText}
+        </BrutalButton>
+      </div>
+    </div>
+  );
 
   return (
     <header className="sticky top-0 z-50 bg-brutal-white border-b-4 border-brutal-black">
@@ -89,23 +143,26 @@ const NavBar: React.FC = () => {
         </nav>
 
         <div className="flex items-center space-x-4">
-          <BrutalButton onClick={handleConnectWallet}>{btnText}</BrutalButton>
-          <button className="block md:hidden brutal-border bg-brutal-black text-brutal-white p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="square"
-            >
-              <line x1="3" y1="12" x2="21" y2="12"></line>
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-          </button>
+          {!isMobile && (
+            <BrutalButton onClick={handleConnectWallet}>{btnText}</BrutalButton>
+          )}
+
+          {isMobile && (
+            <Sheet>
+              <SheetTrigger asChild>
+                <button className="brutal-border bg-brutal-black text-brutal-white p-2">
+                  <Menu />
+                </button>
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                className="brutal-border bg-brutal-white p-6 w-[280px] sm:w-[350px]"
+              >
+                <SheetTitle>Menu</SheetTitle>
+                {mobileLinks()}
+              </SheetContent>
+            </Sheet>
+          )}
         </div>
       </div>
 
