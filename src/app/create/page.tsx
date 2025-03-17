@@ -16,8 +16,8 @@ const Create = () => {
   const [selectedVoice, setSelectedVoice] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [selectedPitch, setSelectedPitch] = useState("");
-  const [selectedSpeed, setSelectedSpeed] = useState("");
+  const [selectedPitch, setSelectedPitch] = useState("3");
+  const [selectedSpeed, setSelectedSpeed] = useState("3");
 
   const [uploadedAvatar, setUploadedAvatar] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -104,6 +104,63 @@ const Create = () => {
 
   const handleCreate = () => {
     console.log("creating...");
+
+    if (!name) {
+      alert("Agent name is required!");
+      return;
+    }
+
+    if (!description) {
+      alert("Agent personality description is required!");
+      return;
+    }
+
+    if (!selectedGender) {
+      alert("Agent gender is required!");
+      return;
+    }
+
+    if (!selectedTags || selectedTags.length === 0) {
+      alert("Agent tags are required!");
+      return;
+    }
+
+    if (!selectedVoice) {
+      alert("Agent voice is required!");
+      return;
+    }
+
+    if (!selectedLanguage) {
+      alert("Agent language is required!");
+      return;
+    }
+
+    if (!selectedPitch) {
+      alert("Agent pitch is required!");
+      return;
+    }
+
+    if (!selectedSpeed) {
+      alert("Agent speed is required!");
+      return;
+    }
+
+    if (!uploadedAvatar) {
+      alert("Agent avatar is required!");
+      return;
+    }
+
+    console.log(
+      name,
+      description,
+      selectedGender,
+      selectedTags,
+      selectedVoice,
+      selectedLanguage,
+      selectedPitch,
+      selectedSpeed,
+      uploadedAvatar
+    );
   };
 
   const handleUploadClick = () => {
@@ -318,7 +375,7 @@ const Create = () => {
                   <input
                     type="range"
                     min="1"
-                    max="6"
+                    max="5"
                     step={1}
                     className="w-full"
                     value={selectedPitch}
@@ -330,7 +387,7 @@ const Create = () => {
                   <input
                     type="range"
                     min="1"
-                    max="6"
+                    max="5"
                     step={1}
                     className="w-full"
                     value={selectedSpeed}
