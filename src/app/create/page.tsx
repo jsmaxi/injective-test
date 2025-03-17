@@ -10,12 +10,14 @@ import { useWalletStore } from "@/context/WalletContextProvider";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import { pinToIpfs, pinToIpfsJson } from "@/utils/pinata";
+import { Textarea } from "@/components/ui/textarea";
 
 const Create = () => {
   const [uploading, setUploading] = useState(false);
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [knowledge, setKnowledge] = useState("");
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedVoice, setSelectedVoice] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
@@ -137,6 +139,11 @@ const Create = () => {
       return;
     }
 
+    if (!knowledge) {
+      alert("Agent knowledge is required!");
+      return;
+    }
+
     if (!selectedGender) {
       alert("Agent gender is required!");
       return;
@@ -180,6 +187,7 @@ const Create = () => {
     console.log(
       name,
       description,
+      knowledge,
       selectedGender,
       selectedTags,
       selectedVoice,
@@ -194,7 +202,8 @@ const Create = () => {
 
       const jsonData = {
         name: name,
-        description: description,
+        personality: description,
+        knowledge: knowledge,
         gender: selectedGender,
         tags: selectedTags,
         voice: selectedVoice,
@@ -319,6 +328,21 @@ const Create = () => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
+            </div>
+
+            <div className="mb-6">
+              <label className="block font-bold mb-2">Agent Knowledge</label>
+              <Textarea
+                className="brutal-border w-full p-3 bg-brutal-offwhite"
+                rows={6}
+                placeholder="Describe in detail what your agent knows about (e.g., Injective, crypto, philosophy, etc.)"
+                maxLength={2000}
+                value={knowledge}
+                onChange={(e) => setKnowledge(e.target.value)}
+              />
+              <p className="text-xs mt-1 text-gray-500">
+                Maximum 700 characters
+              </p>
             </div>
 
             <div className="mb-6">
