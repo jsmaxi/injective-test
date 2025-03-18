@@ -1,56 +1,121 @@
-# PodcastAI Injective
+# 🎙️ AI Podcast Agents - Decentralized Podcast Creation
 
-CRYPTO + AI + PODCASTS
+![alt text](images/agents.png)
 
-Create, buy, and sell AI podcast agents on the first marketplace combining cryptocurrency, artificial intelligence, and podcast technology.
+* Web Application (Agent Creation and Marketplace): https://injective-podcastai.vercel.app/
+* Podcast Generation Demo: https://podcastai-dapp-production.up.railway.app/
 
-<img src="./images/podcastai.png" alt="project logo" width="77" height="77"/>
+## 🚀 Overview
+This project enables the creation of **AI-driven podcast agents** as **NFTs** with unique **personalities, knowledge bases, and custom voices**. These agents are then used to generate podcasts on demand. All transactions are handled using the **Injective blockchain ($INJ)** for a decentralized and transparent ecosystem.
 
-Web Application: https://injective-podcastai.vercel.app/
+## 🏗️ Architecture
 
+### **1. Agent Creation**
+- **Agent creators** design AI-driven **Podcast Agents** with:
+  - Custom **personality**
+  - Unique **knowledge base**
+  - Distinct **voice**
+- These agents are minted as **NFTs** using the **Agent Creator Injective Contract**.
+- The metadata (personality, knowledge, and voice) is stored on **IPFS** for decentralized storage.
+
+### **2. Marketplace for Podcast Agents**
+- The **Podcast Agents NFTs** are listed on a **marketplace**.
+- **Podcast creators** purchase agents using **$INJ tokens**.
+
+### **3. Podcast Generation**
+- After acquiring an agent, the **Podcast Creator** requests a podcast on **Topic X**.
+- The **Podcast Engine** performs the following:
+  1. Generates a **transcript** using the agent’s **personality & knowledge**.
+  2. Converts the transcript into a **podcast with the agent’s custom voice**.
+
+### **4. Podcast Consumption & Monetization**
+- The **generated podcast** is available for listeners.
+- Listeners can **tip** creators.
+
+## 🔗 Diagram
+
+![alt text](images/architecture.png)
+
+## Agent Metadata on IPFS 
+
+![alt text](images/ipfs_agent.png)
+
+## 🛠️ Tech Stack
+- **Blockchain**: Injective ($INJ), CosmWasm, Rust
+- **Frontend**: NextJs, TailwindCSS
+- **Wallet Integration**: Metamask
+- **Storage**: IPFS, Pinata
+- **AI Models**: Play AI API, OpenAI API, Langchain
+
+## Deployed Contracts 
 Deployed NFT contract address example (on Injective Testnet): inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2
 
-[Commands](./COMMANDS.txt)
+## Injective Interaction:
+```
 
-## Overview
+injectived keys add testuser
+exmaple psw: 12345678
 
-PodcastAI enables users to design unique AI podcast hosts with customizable:
+cargo schema
+cargo build
+cargo wasm
 
-- Personality traits
+docker run --rm -v "$(pwd)":/code \
+  --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
+  --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+  cosmwasm/rust-optimizer:0.16.1
 
-- Voice characteristics
+yes 12345678 | injectived tx wasm store artifacts/nft_contract.wasm --from=testuser --chain-id="injective-888" --yes --gas-prices=500000000inj --gas=20000000 --node=https://testnet.sentry.tm.injective.network:443
 
-- Topic expertise
+example "code_id": "27100"
 
-List your creations on our market and earn INJ when others use your agents.
+INIT='{"name":"TestNFT","symbol":"TNFT"}'
+yes 12345678 | injectived tx wasm instantiate 27100 $INIT --label="NFT Test Contract" --from=testuser --chain-id="injective-888" --yes --gas-prices=500000000inj --gas=20000000 --no-admin --node=https://testnet.sentry.tm.injective.network:443
 
-## Key Features
+"_contract_address": "inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2",
 
-- Create AI Podcast Agents: Design personalized AI podcast agents with specific characteristics
+injectived query wasm contract-state all inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 \
+--node=https://testnet.sentry.tm.injective.network:443 \
+--output json
 
-- Market Integration: Buy, sell, and trade AI podcast agents using INJ
+injectived query wasm contract-state smart inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"get_nft":{"token_id":"0"}}' \
+--node=https://testnet.sentry.tm.injective.network:443 \
+--output json
 
-- Earn While You Create: Generate passive income when others use your agents
+injectived query wasm contract-state smart inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"get_owner_nfts":{"owner":"inj1rz6vnxwz6xglukgjzzsujcqh0gxnwzhe2nuzfz"}}' \
+--node=https://testnet.sentry.tm.injective.network:443 \
+--output json
 
-- Blockchain Powered: Built on the Injective Network for fast, cheap and secure transactions
+injectived query wasm contract-state smart inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"get_listed_nfts":{}}' \
+--node=https://testnet.sentry.tm.injective.network:443 \
+--output json
 
-## Technology Stack
+price of 0.01 INJ:
 
-- Blockchain: Injective Network, Injective SDK, CosmWasm, Rust
+yes 12345678 | injectived tx wasm execute inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"mint":{"token_uri":"uri","price":"10000000000000000"}}' --from=testuser --chain-id="injective-888" --yes --fees=1000000000000000inj --gas=2000000 --node=https://testnet.sentry.tm.injective.network:443 --output json
 
-- Frontend: NextJs, TailwindCSS
+yes 12345678 | injectived tx wasm execute inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"list":{"token_id":"0"}}' --from=testuser --chain-id="injective-888" --yes --fees=1000000000000000inj --gas=2000000 --node=https://testnet.sentry.tm.injective.network:443 --output json
 
-- Wallet Integration: Metamask
+injectived query wasm contract-state smart inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"get_listed_nfts":{}}' --node=https://testnet.sentry.tm.injective.network:443 --output json
 
-- Storage: Pinata Cloud IPFS
+injectived keys add testuser2
+12345678
 
-- AI Technology: Play AI API, OpenAI API
+https://testnet.faucet.injective.network/
 
----
+yes 12345678 | injectived tx wasm execute inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"buy":{"token_id":"0"}}' --from=testuser2 --chain-id="injective-888" --yes --fees=1000000000000000inj --gas=2000000 --node=https://testnet.sentry.tm.injective.network:443 --output json --amount=10000000000000000inj
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+injectived query wasm contract-state smart inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"get_owner_nfts":{"owner":"inj1rz6vnxwz6xglukgjzzsujcqh0gxnwzhe2nuzfz"}}' \
+--node=https://testnet.sentry.tm.injective.network:443 \
+--output json
 
-## Getting Started
+injectived query wasm contract-state smart inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2 '{"get_owner_nfts":{"owner":"inj15tcqqeafzl2kascdsl5n5y4sg67h6thclpn60l"}}' \
+--node=https://testnet.sentry.tm.injective.network:443 \
+--output json
+
+```
+
+## Getting Started (Running locally)
 
 ```
 npm install
@@ -69,22 +134,3 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
