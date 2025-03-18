@@ -126,7 +126,7 @@ const NftContextProvider = (props: Props) => {
 
       const msg = MsgExecuteContractCompat.fromJSON({
         contractAddress: NFT_CONTRACT_ADDRESS,
-        sender: getInjectiveAddress(injectiveAddress),
+        sender: injectiveAddress,
         msg: {
           buy: {
             token_id: tokenId,
@@ -142,12 +142,14 @@ const NftContextProvider = (props: Props) => {
 
       const response = await msgBroadcastClient.broadcast({
         msgs: msg,
-        injectiveAddress: getInjectiveAddress(injectiveAddress),
+        injectiveAddress: injectiveAddress,
       });
 
       console.log("Response tx hash", response?.txHash);
 
       fetchOwnerNfts();
+
+      alert("Success. Transaction hash: " + response?.txHash);
     } catch (e) {
       console.log((e as any).message);
       alert((e as any).message);
@@ -191,6 +193,8 @@ const NftContextProvider = (props: Props) => {
 
       fetchAllListedNfts();
       fetchOwnerNfts();
+
+      alert("Success. Transaction hash: " + response?.txHash);
     } catch (e) {
       console.log((e as any).message);
       alert((e as any).message);
@@ -234,6 +238,8 @@ const NftContextProvider = (props: Props) => {
 
       fetchAllListedNfts();
       fetchOwnerNfts();
+
+      alert("Success. Transaction hash: " + response?.txHash);
     } catch (e) {
       console.log((e as any).message);
       alert((e as any).message);
