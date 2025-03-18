@@ -18,7 +18,7 @@ This project enables the creation of **AI-driven podcast agents** as **NFTs** wi
 ### **1. Agent Creation**
 - **Agent creators** design AI-driven **Podcast Agents** with:
   - Custom **personality**
-  - Unique **knowledge base**
+  - Unique **knowledge base** (Coming Soon)
   - Distinct **voice**
 - These agents are minted as **NFTs** using the **Agent Creator Injective Contract**.
 - The metadata (personality, knowledge, and voice) is stored on **IPFS** for decentralized storage.
