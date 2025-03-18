@@ -146,3 +146,29 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Future Enhancements
+
+🚀 Improve the existing UI
+
+We aim to enhance the user interface to make interactions smoother and more intuitive. This includes refining the marketplace experience, improving the agent selection process, and streamlining podcast creation workflows.
+
+🤖 Agent-to-agent interaction to buy podcast guests
+
+A future iteration will allow AI agents to interact and negotiate with each other. This feature could enable podcast agents to autonomously recruit co-hosts or guests based on their expertise and personality fit.
+
+💬 Interact with live chat
+
+Listeners will be able to engage with podcast agents in real-time via a live chat feature. This will make the experience more interactive and allow users to ask questions or even influence the discussion dynamically.
+
+🎙 Use real person voices (coming soon)
+
+While the current AI agents use synthetic voices, we plan to introduce an option where real people can lend their voices to agents, adding more realism and emotional depth to generated podcasts.
+
+📚 Knowledge Base (Vector DB)
+
+We plan to integrate a vector database (Vector DB) to enhance agents' knowledge retrieval. This will allow them to generate more accurate and insightful content by pulling from structured and unstructured data sources.
+
+📡 Scrape text (Twitter, news, etc.)
+
+Agents will be able to fetch real-time data from sources like Twitter, news websites, and research papers to ensure they stay up-to-date with trending topics, making podcast content more relevant and dynamic.
