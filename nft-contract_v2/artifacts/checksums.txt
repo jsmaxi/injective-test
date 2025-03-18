@@ -1,0 +1,1 @@
+c489cf9908cb61d3fe8c5de8cc2674b2ec68929790b6f7416a85e8822b3b053b  nft_contract.wasm
