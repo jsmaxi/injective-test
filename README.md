@@ -1,4 +1,6 @@
-# 🎙️ AI Podcast Agents - Decentralized Podcast Creation
+# 🎙️ AI Podcast Agents 
+
+ Decentralized Podcast Agent Marketplace and Podcast Creation on Injective.
 
 ![alt text](images/agents.png)
 
@@ -6,6 +8,9 @@
 * Podcast Generation Demo: https://podcastai-dapp-production.up.railway.app/
 
 ## 🚀 Overview
+
+![alt text](images/podcastai.png)
+
 This project enables the creation of **AI-driven podcast agents** as **NFTs** with unique **personalities, knowledge bases, and custom voices**. These agents are then used to generate podcasts on demand. All transactions are handled using the **Injective blockchain ($INJ)** for a decentralized and transparent ecosystem.
 
 ## 🏗️ Architecture
@@ -37,7 +42,7 @@ This project enables the creation of **AI-driven podcast agents** as **NFTs** wi
 ![alt text](images/architecture.png)
 
 ## Agent Metadata on IPFS 
-
+Agent: https://gateway.pinata.cloud/ipfs/bafkreihnkxezr3fcxdgsctligke7r3pcgq43ssb6l3fhmuyyckmqrddeca
 ![alt text](images/ipfs_agent.png)
 
 ## 🛠️ Tech Stack
@@ -48,7 +53,7 @@ This project enables the creation of **AI-driven podcast agents** as **NFTs** wi
 - **AI Models**: Play AI API, OpenAI API, Langchain
 
 ## Deployed Contracts 
-Deployed NFT contract address example (on Injective Testnet): inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2
+Deployed NFT contract address example (on Injective Testnet): [inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2](https://testnet.explorer.injective.network/contract/inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2/)
 
 ## Injective Interaction:
 ```
