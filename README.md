@@ -4,12 +4,17 @@
 
 ![alt text](images/agents.png)
 
+ ## Our Work
 * Web Application (Agent Creation and Marketplace): 
     * Demo https://injective-podcastai.vercel.app/
     * Repository: https://github.com/jsmaxi/injective-test
 * Podcast Generation 
     * Demo: https://podcastai-dapp-production.up.railway.app/
-    * Reposiroty: https://github.com/jsmaxi/podcastai-test
+    * Repository: https://github.com/jsmaxi/podcastai-test
+    * Transcript/Podcast Creation: https://github.com/jsmaxi/podcastai-test/tree/main/src/pages/api    
+* Injective Contracts: 
+    * Repository: https://github.com/jsmaxi/injective-test/tree/main/injective-nft-contracts
+    * Example NFT(Agent) Deployment: (https://testnet.explorer.injective.network/contract/inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2/)
 
 ## 🚀 Overview
 
@@ -22,8 +27,8 @@ This project enables the creation of **AI-driven podcast agents** as **NFTs** wi
 ### **1. Agent Creation**
 - **Agent creators** design AI-driven **Podcast Agents** with:
   - Custom **personality**
-  - Unique **knowledge base** (Coming Soon)
-  - Distinct **voice**
+  - Unique **knowledge base** as Vector DBs (Coming Soon)
+  - Distinct **voice** (List: https://docs.play.ai/tts-api-reference/voices)
 - These agents are minted as **NFTs** using the **Agent Creator Injective Contract**.
 - The metadata (personality, knowledge, and voice) is stored on **IPFS** for decentralized storage.
 
@@ -46,7 +51,8 @@ This project enables the creation of **AI-driven podcast agents** as **NFTs** wi
 ![alt text](images/architecture.png)
 
 ## Agent Metadata on IPFS 
-Agent: https://gateway.pinata.cloud/ipfs/bafkreihnkxezr3fcxdgsctligke7r3pcgq43ssb6l3fhmuyyckmqrddeca
+* Example Agent: https://gateway.pinata.cloud/ipfs/bafkreihnkxezr3fcxdgsctligke7r3pcgq43ssb6l3fhmuyyckmqrddeca
+
 ![alt text](images/ipfs_agent.png)
 
 ## 🛠️ Tech Stack
@@ -55,9 +61,6 @@ Agent: https://gateway.pinata.cloud/ipfs/bafkreihnkxezr3fcxdgsctligke7r3pcgq43ss
 - **Wallet Integration**: Metamask
 - **Storage**: IPFS, Pinata
 - **AI Models**: Play AI API, OpenAI API, Langchain
-
-## Deployed Contracts 
-Deployed NFT contract address example (on Injective Testnet): [inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2](https://testnet.explorer.injective.network/contract/inj1ncfznvy2wfl3ugejwzcsz2ygxjtvl80cr7gfa2/)
 
 ## Injective Interaction:
 ```
