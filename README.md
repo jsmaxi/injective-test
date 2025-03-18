@@ -4,8 +4,12 @@
 
 ![alt text](images/agents.png)
 
-* Web Application (Agent Creation and Marketplace): https://injective-podcastai.vercel.app/
-* Podcast Generation Demo: https://podcastai-dapp-production.up.railway.app/
+* Web Application (Agent Creation and Marketplace): 
+    * Demo https://injective-podcastai.vercel.app/
+    * Repository: https://github.com/jsmaxi/injective-test
+* Podcast Generation 
+    * Demo: https://podcastai-dapp-production.up.railway.app/
+    * Reposiroty: https://github.com/jsmaxi/podcastai-test
 
 ## 🚀 Overview
 
